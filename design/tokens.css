@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Design tokens — phong cách "điện tử tiêu dùng" tối giản
+   Học theo tinh thần: đen/trắng tương phản cao, mặt xám rất nhạt, một màu nhấn
+   xanh dương, nút dạng viên thuốc, thẻ bo góc lớn, tiêu đề hình học đậm.
+   Không chứa logo, hình ảnh, font độc quyền hay nội dung của website gốc.
+   Font: Lexend (tiêu đề) + Be Vietnam Pro (nội dung) — Google Fonts, hỗ trợ tiếng Việt.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Lexend:wght@500;700&display=swap");
+
+:root {
+  /* ---------- Màu gốc (palette) ---------- */
+  --c-black: #000000;
+  --c-white: #ffffff;
+  --c-gray-50: #f7f7f7;
+  --c-gray-100: #eeeeee;
+  --c-gray-200: #dddddd;
+  --c-gray-400: #9e9e9e;
+  --c-gray-600: #757575;
+  --c-gray-800: #363636;
+  --c-blue-300: #68aeff;
+  --c-blue-500: #2189ff;
+  --c-blue-600: #006bea;
+  --c-blue-900: #1428a0;
+  --c-red-500: #e2231a;
+  --c-green-500: #00a862;
+  --c-amber-500: #f4a100;
+
+  /* ---------- Màu theo vai trò (dùng cái này trong giao diện) ---------- */
+  --color-bg: var(--c-white);
+  --color-surface: var(--c-gray-50);
+  --color-surface-strong: var(--c-gray-100);
+  --color-inverse-bg: var(--c-black);
+  --color-inverse-text: var(--c-white);
+  --color-text: var(--c-black);
+  --color-text-muted: var(--c-gray-600);
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-strong: rgba(0, 0, 0, 0.2);
+  --color-accent: var(--c-blue-500);
+  --color-accent-hover: var(--c-blue-600);
+  --color-accent-text: var(--c-white);
+  --color-link: var(--c-blue-600);
+  --color-focus: var(--c-blue-300);
+  --color-danger: var(--c-red-500);
+  --color-success: var(--c-green-500);
+  --color-warning: var(--c-amber-500);
+  --color-overlay: rgba(0, 0, 0, 0.5);
+
+  /* ---------- Kiểu chữ ---------- */
+  --font-display: "Lexend", "Be Vietnam Pro", Arial, sans-serif;
+  --font-body: "Be Vietnam Pro", Arial, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.33;
+  --line-height-body: 1.5;
+  --letter-spacing-display: -0.01em;
+
+  /* ---------- Cỡ chữ ---------- */
+  --font-size-xs: 0.75rem;    /* 12px — chú thích, nhãn nhỏ */
+  --font-size-sm: 0.875rem;   /* 14px — nút, ô nhập, phụ đề */
+  --font-size-md: 1rem;       /* 16px — nội dung */
+  --font-size-lg: 1.125rem;   /* 18px — đoạn dẫn */
+  --font-size-xl: 1.5rem;     /* 24px — H4 */
+  --font-size-2xl: 2rem;      /* 32px — H3 */
+  --font-size-3xl: 2.5rem;    /* 40px — H2 */
+  --font-size-4xl: 3.5rem;    /* 56px — H1 / hero */
+
+  /* ---------- Khoảng cách (bậc 4px) ---------- */
+  --space-0: 0;
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.5rem;   /* 24px */
+  --space-6: 2rem;     /* 32px */
+  --space-7: 3rem;     /* 48px */
+  --space-8: 4rem;     /* 64px */
+  --space-9: 6rem;     /* 96px */
+
+  /* ---------- Bo góc ---------- */
+  --radius-none: 0;
+  --radius-sm: 6px;     /* nhãn, ô nhỏ */
+  --radius-md: 14px;    /* ô nhập, popup */
+  --radius-lg: 20px;    /* thẻ */
+  --radius-xl: 24px;    /* khối lớn, banner */
+  --radius-pill: 999px; /* nút, ô tìm kiếm, chip */
+  --radius-circle: 50%;
+
+  /* ---------- Phụ trợ ---------- */
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --transition-fast: 150ms ease;
+  --control-height-sm: 32px;
+  --control-height-md: 44px;
+  --control-height-lg: 52px;
+}
+
+/* Chế độ tối: đảo nền đen/trắng, giữ màu nhấn xanh */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #000000;
+    --color-surface: #1a1a1a;
+    --color-surface-strong: #262626;
+    --color-inverse-bg: #ffffff;
+    --color-inverse-text: #000000;
+    --color-text: #ffffff;
+    --color-text-muted: #a8a8a8;
+    --color-border: rgba(255, 255, 255, 0.14);
+    --color-border-strong: rgba(255, 255, 255, 0.28);
+    --color-link: var(--c-blue-300);
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg: #000000;
+  --color-surface: #1a1a1a;
+  --color-surface-strong: #262626;
+  --color-inverse-bg: #ffffff;
+  --color-inverse-text: #000000;
+  --color-text: #ffffff;
+  --color-text-muted: #a8a8a8;
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-border-strong: rgba(255, 255, 255, 0.28);
+  --color-link: var(--c-blue-300);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+}

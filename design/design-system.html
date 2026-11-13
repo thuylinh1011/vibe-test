@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-display);
+    line-height: var(--line-height-tight);
+    margin: 0;
+  }
+  p { margin: 0; }
+  a { color: var(--color-link); }
+
+  /* ---------- Khung trang ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .topbar__name { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-lg); }
+  .topbar nav { display: flex; gap: var(--space-5); font-size: var(--font-size-sm); font-weight: 700; }
+  .topbar nav a { color: var(--color-text); text-decoration: none; }
+  .topbar nav a:hover { text-decoration: underline; }
+
+  .hero {
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+    padding: var(--space-9) var(--space-5) var(--space-8);
+  }
+  .hero h1 { font-size: var(--font-size-4xl); max-width: 14ch; }
+  .hero p { margin-top: var(--space-4); font-size: var(--font-size-lg); max-width: 52ch; opacity: .8; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  section { padding: var(--space-8) var(--space-5); border-bottom: 1px solid var(--color-border); }
+  .section-head { margin-bottom: var(--space-6); }
+  .section-head h2 { font-size: var(--font-size-3xl); }
+  .section-head p { margin-top: var(--space-2); color: var(--color-text-muted); }
+  .label { font-size: var(--font-size-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--color-text-muted); margin-bottom: var(--space-3); }
+  .group + .group { margin-top: var(--space-7); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: .85em; color: var(--color-text-muted); }
+
+  /* ---------- Bảng màu ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-4); }
+  .swatch { border-radius: var(--radius-lg); overflow: hidden; background: var(--color-surface); }
+  .swatch__chip { height: 88px; box-shadow: inset 0 0 0 1px var(--color-border); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .swatch__meta { padding: var(--space-3); font-size: var(--font-size-sm); }
+  .swatch__meta strong { display: block; }
+
+  /* ---------- Kiểu chữ ---------- */
+  .type-row { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-4); align-items: baseline; padding: var(--space-4) 0; border-top: 1px solid var(--color-border); }
+  .type-row:first-child { border-top: 0; }
+  .type-row .meta { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+  .fonts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
+  .font-card { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-5); }
+  .font-card .big { font-size: var(--font-size-3xl); line-height: 1.1; margin: var(--space-2) 0; }
+
+  /* ---------- Khoảng cách & bo góc ---------- */
+  .scale { display: flex; flex-direction: column; gap: var(--space-2); }
+  .scale__item { display: grid; grid-template-columns: 90px 60px 1fr; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); }
+  .scale__bar { height: 12px; background: var(--color-accent); border-radius: var(--radius-pill); }
+  .radii { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-4); }
+  .radius-box { aspect-ratio: 1; background: var(--color-surface-strong); border: 1px solid var(--color-border-strong); display: flex; align-items: flex-end; padding: var(--space-3); font-size: var(--font-size-xs); }
+
+  /* ==========================================================================
+     THÀNH PHẦN — có thể chép sang dự án
+     ========================================================================== */
+
+  /* Nút */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    height: var(--control-height-md);
+    padding: 0 var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  }
+  .btn:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+  .btn--primary { background: var(--color-accent); color: var(--color-accent-text); border-color: var(--color-accent); }
+  .btn--primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+  .btn--dark { background: var(--color-inverse-bg); color: var(--color-inverse-text); }
+  .btn--dark:hover { opacity: .85; }
+  .btn--outline { background: transparent; color: var(--color-text); border-color: var(--color-text); }
+  .btn--outline:hover { background: var(--color-text); color: var(--color-bg); }
+  .btn--ghost { background: transparent; color: var(--color-text); padding: 0 var(--space-2); text-decoration: underline; text-underline-offset: 4px; }
+  .btn--sm { height: var(--control-height-sm); padding: 0 var(--space-4); font-size: var(--font-size-xs); }
+  .btn--lg { height: var(--control-height-lg); padding: 0 var(--space-6); font-size: var(--font-size-md); }
+  .btn--icon { width: var(--control-height-md); padding: 0; border-radius: var(--radius-circle); background: var(--color-surface); color: var(--color-text); }
+  .btn:disabled { background: var(--color-surface-strong); color: var(--color-text-muted); border-color: transparent; cursor: not-allowed; opacity: 1; }
+  .on-dark { background: var(--color-inverse-bg); padding: var(--space-5); border-radius: var(--radius-lg); }
+  .on-dark .btn--outline { color: var(--color-inverse-text); border-color: var(--color-inverse-text); }
+  .on-dark .btn--outline:hover { background: var(--color-inverse-text); color: var(--color-inverse-bg); }
+
+  /* Ô nhập */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-5); }
+  .field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .field__label { font-size: var(--font-size-sm); font-weight: 700; }
+  .field__hint { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+  .input, .select {
+    width: 100%;
+    height: var(--control-height-md);
+    padding: 0 var(--space-4);
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: var(--font-size-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .input::placeholder { color: var(--color-text-muted); }
+  .input:hover, .select:hover { border-color: var(--color-text); }
+  .input:focus, .select:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent); }
+  .input--error { border-color: var(--color-danger); }
+  .field--error .field__hint { color: var(--color-danger); }
+  .input:disabled { background: var(--color-surface); color: var(--color-text-muted); cursor: not-allowed; }
+  .search { position: relative; }
+  .search .input { border-radius: var(--radius-pill); background: var(--color-surface); border-color: var(--color-surface); padding-left: 44px; }
+  .search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); }
+  .check { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--color-accent); }
+
+  /* Thẻ */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--space-5); }
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  }
+  .card:hover { box-shadow: var(--shadow-card); transform: translateY(-2px); }
+  .card__media { aspect-ratio: 4 / 3; display: grid; place-items: center; background: var(--color-surface-strong); }
+  .card__shape { width: 42%; aspect-ratio: 1; border-radius: var(--radius-xl); background: linear-gradient(140deg, var(--c-blue-300), var(--c-blue-900)); }
+  .card__body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+  .card__title { font-family: var(--font-display); font-size: var(--font-size-xl); font-weight: 700; line-height: var(--line-height-snug); }
+  .card__text { color: var(--color-text-muted); font-size: var(--font-size-sm); }
+  .card__actions { margin-top: auto; padding-top: var(--space-4); display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .card--dark { background: var(--color-inverse-bg); color: var(--color-inverse-text); }
+  .card--dark .card__text { color: inherit; opacity: .7; }
+  .card--dark .card__media { background: transparent; }
+  .card--outline { background: var(--color-bg); border: 1px solid var(--color-border); }
+  .badge { align-self: flex-start; font-size: var(--font-size-xs); font-weight: 700; padding: 2px var(--space-2); border-radius: var(--radius-sm); background: var(--color-accent); color: var(--color-accent-text); }
+
+  footer { padding: var(--space-6) var(--space-5); color: var(--color-text-muted); font-size: var(--font-size-sm); }
+
+  @media (max-width: 640px) {
+    .topbar nav { display: none; }
+    .hero { padding: var(--space-8) var(--space-4) var(--space-7); }
+    .hero h1 { font-size: var(--font-size-3xl); }
+    section { padding: var(--space-7) var(--space-4); }
+    .section-head h2 { font-size: var(--font-size-2xl); }
+    .type-row { grid-template-columns: 1fr; gap: var(--space-1); }
+    .type-row > div:last-child { overflow-wrap: anywhere; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar__name">Design System</span>
+  <nav>
+    <a href="#colors">Màu</a><a href="#type">Kiểu chữ</a><a href="#space">Khoảng cách</a>
+    <a href="#buttons">Nút</a><a href="#inputs">Ô nhập</a><a href="#cards">Thẻ</a>
+  </nav>
+  <button class="btn btn--icon" id="themeToggle" aria-label="Đổi giao diện sáng/tối" title="Sáng / tối">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+  </button>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Gọn gàng, tương phản, tập trung.</h1>
+    <p>Bộ token và thành phần giao diện tối giản: nền đen trắng, mặt xám nhạt, một màu nhấn xanh dương, nút bo tròn hoàn toàn và thẻ bo góc lớn.</p>
+    <div class="row" style="margin-top: var(--space-6)">
+      <a class="btn btn--primary btn--lg" href="#buttons">Xem thành phần</a>
+      <a class="btn btn--lg" style="background:transparent;color:inherit;border-color:currentColor" href="#colors">Bảng màu</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MÀU ============ -->
+<section id="colors"><div class="wrap">
+  <div class="section-head"><h2>Bảng màu</h2><p>Dùng màu theo vai trò (<code>--color-*</code>) trong giao diện; màu gốc (<code>--c-*</code>) chỉ để định nghĩa.</p></div>
+  <div class="group"><div class="label">Theo vai trò — đổi theo sáng/tối</div><div class="swatches" id="roleSwatches"></div></div>
+  <div class="group"><div class="label">Màu gốc</div><div class="swatches" id="baseSwatches"></div></div>
+</div></section>
+
+<!-- ============ KIỂU CHỮ ============ -->
+<section id="type"><div class="wrap">
+  <div class="section-head"><h2>Kiểu chữ</h2><p>Tiêu đề hình học đậm, nội dung trung tính dễ đọc. Cả hai font đều hỗ trợ đầy đủ tiếng Việt.</p></div>
+  <div class="fonts">
+    <div class="font-card"><div class="label">Tiêu đề · <code>--font-display</code></div><div class="big" style="font-family:var(--font-display);font-weight:700">Lexend Aa</div><p class="card__text">Đậm 700 · Trung bình 500</p></div>
+    <div class="font-card"><div class="label">Nội dung · <code>--font-body</code></div><div class="big" style="font-family:var(--font-body);font-weight:500">Be Vietnam Pro Aa</div><p class="card__text">Thường 400 · Trung bình 500 · Đậm 700</p></div>
+  </div>
+  <div id="typeScale"></div>
+</div></section>
+
+<!-- ============ KHOẢNG CÁCH & BO GÓC ============ -->
+<section id="space"><div class="wrap">
+  <div class="section-head"><h2>Khoảng cách &amp; bo góc</h2><p>Khoảng cách theo bậc 4px. Nút dùng bo tròn hoàn toàn, thẻ dùng 20px.</p></div>
+  <div class="group"><div class="label">Khoảng cách</div><div class="scale" id="spaceScale"></div></div>
+  <div class="group"><div class="label">Bo góc</div><div class="radii" id="radiusScale"></div></div>
+</div></section>
+
+<!-- ============ NÚT ============ -->
+<section id="buttons"><div class="wrap">
+  <div class="section-head"><h2>Nút bấm</h2><p>Chữ đậm, bo tròn hoàn toàn. Mỗi khu vực chỉ nên có một nút chính màu xanh.</p></div>
+  <div class="group"><div class="label">Kiểu</div>
+    <div class="row">
+      <button class="btn btn--primary">Mua ngay</button>
+      <button class="btn btn--dark">Tìm hiểu thêm</button>
+      <button class="btn btn--outline">So sánh</button>
+      <button class="btn btn--ghost">Xem chi tiết</button>
+      <button class="btn btn--primary" disabled>Hết hàng</button>
+    </div>
+  </div>
+  <div class="group"><div class="label">Kích thước</div>
+    <div class="row">
+      <button class="btn btn--primary btn--sm">Nhỏ · 32px</button>
+      <button class="btn btn--primary">Vừa · 44px</button>
+      <button class="btn btn--primary btn--lg">Lớn · 52px</button>
+      <button class="btn btn--icon" aria-label="Thêm vào giỏ"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></button>
+    </div>
+  </div>
+  <div class="group"><div class="label">Trên nền tối</div>
+    <div class="row on-dark">
+      <button class="btn btn--primary">Mua ngay</button>
+      <button class="btn btn--outline">Tìm hiểu thêm</button>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ Ô NHẬP ============ -->
+<section id="inputs"><div class="wrap">
+  <div class="section-head"><h2>Ô nhập</h2><p>Viền mảnh, bo 14px; khi chọn viền chuyển xanh kèm quầng sáng. Ô tìm kiếm dùng nền xám và bo tròn hoàn toàn.</p></div>
+  <div class="form-grid">
+    <label class="field"><span class="field__label">Họ và tên</span><input class="input" placeholder="Nguyễn Văn A"><span class="field__hint">Như trên giấy tờ tùy thân.</span></label>
+    <label class="field field--error"><span class="field__label">Email</span><input class="input input--error" value="email@" aria-invalid="true"><span class="field__hint">Email chưa đúng định dạng.</span></label>
+    <label class="field"><span class="field__label">Danh mục</span>
+      <select class="select"><option>Điện thoại</option><option>Máy tính bảng</option><option>Tivi</option><option>Gia dụng</option></select>
+    </label>
+    <label class="field"><span class="field__label">Mã giảm giá</span><input class="input" placeholder="Không khả dụng" disabled></label>
+    <div class="field"><span class="field__label">Tìm kiếm</span>
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input class="input" type="search" placeholder="Bạn đang tìm gì?" aria-label="Tìm kiếm">
+      </div>
+    </div>
+    <div class="field"><span class="field__label">Tuỳ chọn</span>
+      <label class="check"><input type="checkbox" checked> Nhận tin khuyến mãi</label>
+      <label class="check"><input type="checkbox"> Ghi nhớ đăng nhập</label>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ THẺ ============ -->
+<section id="cards"><div class="wrap">
+  <div class="section-head"><h2>Thẻ</h2><p>Nền xám nhạt, bo 20px, không viền; nổi nhẹ khi rê chuột. Ảnh minh hoạ ở đây chỉ là khối màu thay thế.</p></div>
+  <div class="cards">
+    <article class="card">
+      <div class="card__media"><div class="card__shape"></div></div>
+      <div class="card__body">
+        <span class="badge">Mới</span>
+        <h3 class="card__title">Tên sản phẩm</h3>
+        <p class="card__text">Mô tả ngắn một đến hai dòng về điểm nổi bật.</p>
+        <div class="card__actions"><button class="btn btn--primary btn--sm">Mua ngay</button><button class="btn btn--ghost btn--sm">Chi tiết</button></div>
+      </div>
+    </article>
+    <article class="card card--dark">
+      <div class="card__media"><div class="card__shape"></div></div>
+      <div class="card__body">
+        <h3 class="card__title">Thẻ nền tối</h3>
+        <p class="card__text">Dùng cho khối quảng bá hoặc nội dung cần nhấn mạnh.</p>
+        <div class="card__actions"><button class="btn btn--primary btn--sm">Khám phá</button></div>
+      </div>
+    </article>
+    <article class="card card--outline">
+      <div class="card__body">
+        <div class="label" style="margin:0">Thẻ thông tin</div>
+        <h3 class="card__title">Thẻ viền, không ảnh</h3>
+        <p class="card__text">Phù hợp cho danh sách tính năng, bảng so sánh hoặc nội dung văn bản.</p>
+        <div class="card__actions"><a class="btn btn--outline btn--sm" href="#cards">Tìm hiểu thêm</a></div>
+      </div>
+    </article>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Token: <code>design/tokens.css</code> · Thành phần: phần CSS "THÀNH PHẦN" trong file này.</div></footer>
+
+<script>
+  const css = getComputedStyle(document.documentElement);
+  const v = n => css.getPropertyValue(n).trim();
+
+  const roles = ["bg","surface","surface-strong","text","text-muted","border","accent","accent-hover","link","inverse-bg","danger","success","warning"];
+  const base = ["black","white","gray-50","gray-100","gray-200","gray-400","gray-600","gray-800","blue-300","blue-500","blue-600","blue-900","red-500","green-500","amber-500"];
+  const swatch = (name) => `<div class="swatch"><div class="swatch__chip" style="background:var(${name})"></div><div class="swatch__meta"><strong>${name.replace(/^--(color|c)-/, "")}</strong><code>${name}</code></div></div>`;
+  document.getElementById("roleSwatches").innerHTML = roles.map(r => swatch("--color-" + r)).join("");
+  document.getElementById("baseSwatches").innerHTML = base.map(b => swatch("--c-" + b)).join("");
+
+  const types = [
+    ["H1 · 4xl", "--font-size-4xl", "display", 700, "Tiêu đề lớn"],
+    ["H2 · 3xl", "--font-size-3xl", "display", 700, "Tiêu đề phần"],
+    ["H3 · 2xl", "--font-size-2xl", "display", 700, "Tiêu đề khối"],
+    ["H4 · xl", "--font-size-xl", "display", 700, "Tiêu đề thẻ"],
+    ["Dẫn · lg", "--font-size-lg", "body", 400, "Đoạn dẫn giới thiệu ngắn gọn cho một phần nội dung."],
+    ["Nội dung · md", "--font-size-md", "body", 400, "Nội dung chính, dễ đọc ở mọi kích thước màn hình."],
+    ["Nhỏ · sm", "--font-size-sm", "body", 700, "Nhãn nút, ô nhập, liên kết điều hướng"],
+    ["Chú thích · xs", "--font-size-xs", "body", 400, "Chú thích, điều khoản, ghi chú phụ"],
+  ];
+  document.getElementById("typeScale").innerHTML = types.map(([n, s, f, w, t]) =>
+    `<div class="type-row"><div><strong style="font-size:var(--font-size-sm)">${n}</strong><div class="meta">${v(s)} · ${w}</div></div>
+     <div style="font-family:var(--font-${f});font-size:var(${s});font-weight:${w};line-height:${f === "display" ? "var(--line-height-tight)" : "var(--line-height-body)"}">${t}</div></div>`).join("");
+
+  document.getElementById("spaceScale").innerHTML = [1,2,3,4,5,6,7,8,9].map(i =>
+    `<div class="scale__item"><code>--space-${i}</code><span>${parseFloat(v("--space-" + i)) * 16}px</span><div class="scale__bar" style="width:var(--space-${i})"></div></div>`).join("");
+
+  document.getElementById("radiusScale").innerHTML = ["sm","md","lg","xl","pill"].map(r =>
+    `<div class="radius-box" style="border-radius:var(--radius-${r})"><span><code>--radius-${r}</code><br>${v("--radius-" + r)}</span></div>`).join("");
+
+  // Nút đổi sáng/tối (ghi nhớ trong trình duyệt nếu được phép)
+  const root = document.documentElement;
+  try { const t = localStorage.getItem("ds-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("ds-theme", root.dataset.theme); } catch (e) {}
+  });
+</script>
+</body>
+</html>
