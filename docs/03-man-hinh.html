@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3. Màn hình — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
+    <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
+    <a class="item active" href="03-man-hinh.html">3. Màn hình</a>
+    <a class="item" href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>
+    <a class="item" href="05-ke-hoach-test.html">5. Kế hoạch test</a>
+  </nav>
+  <main>
+    <p class="eyebrow">Tài liệu 3/5</p>
+    <h1>Màn hình</h1>
+    <p>Game có 3 màn hình, chuyển tiếp tuyến tính: <strong>Bắt đầu → Chơi → Kết thúc</strong>, và từ Kết thúc có thể quay lại Chơi bằng "Chơi lại". Minh hoạ dưới đây chỉ thể hiện bố cục và nội dung — không phải thiết kế pixel-chính-xác.</p>
+
+    <h2>3.1. Màn hình bắt đầu</h2>
+    <div class="mockup">
+      <div class="screen">
+        <h4>🐭 Đập Chuột</h4>
+        <p style="text-align:center; color:var(--color-text-muted); font-size:var(--font-size-sm);">Bấm vào chuột càng nhiều càng tốt trong 30 giây.</p>
+        <p style="text-align:center; font-family:var(--font-display); font-weight:var(--font-weight-bold);">Điểm cao nhất: 12</p>
+        <div class="btn">Bắt đầu</div>
+      </div>
+      <p class="caption">Màn hình bắt đầu — trạng thái đã có điểm cao nhất lưu trước đó</p>
+    </div>
+    <ul>
+      <li>Tên game: <strong>Đập Chuột</strong>.</li>
+      <li>Hướng dẫn ngắn: "Bấm vào chuột càng nhiều càng tốt trong 30 giây."</li>
+      <li>Điểm cao nhất (nếu đã có; nếu chưa có lượt nào thì ẩn dòng này hoặc hiện "Chưa có điểm").</li>
+      <li>Nút <strong>"Bắt đầu"</strong> — focus được bằng <code>Tab</code>, kích hoạt bằng click/chạm hoặc <code>Enter</code>/<code>Space</code>.</li>
+    </ul>
+
+    <h2>3.2. Màn hình chơi</h2>
+    <div class="mockup">
+      <div class="screen">
+        <div class="hud"><span>Điểm: 5</span><span style="color:var(--color-danger);">4s</span></div>
+        <div class="grid3">
+          <div class="cell"></div><div class="cell has-mouse">🐭</div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        </div>
+      </div>
+      <p class="caption">Màn hình chơi — còn 4 giây nên đồng hồ chuyển màu đỏ, ô giữa-trên đang có chuột</p>
+    </div>
+    <ul>
+      <li>Phía trên lưới: <strong>Điểm</strong> hiện tại và <strong>Thời gian còn lại</strong> (đếm ngược theo giây, từ 30 về 0) — cả hai luôn hiển thị, không bị che khi chơi.</li>
+      <li>Ở giữa: lưới 3×3, các ô hình vuông bằng nhau, đủ lớn để chạm bằng ngón tay trên điện thoại (xem kích thước tối thiểu ở mục <a href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>).</li>
+      <li>Phản hồi khi đập trúng: chuột có hiệu ứng bị đập (đổi hình/nhấp nháy), điểm cập nhật ngay lập tức, không có độ trễ cảm nhận được.</li>
+      <li><strong>5 giây cuối:</strong> số hiển thị thời gian đổi sang màu đỏ (<code>--color-danger</code>) để báo sắp hết giờ.</li>
+      <li>Ô đang được focus bằng bàn phím có viền nổi bật (dùng <code>--color-focus</code>).</li>
+    </ul>
+
+    <h2>3.3. Màn hình kết thúc</h2>
+    <div class="mockup">
+      <div class="screen">
+        <h4>Hết giờ!</h4>
+        <p style="text-align:center; font-size:var(--font-size-2xl); font-family:var(--font-display); font-weight:var(--font-weight-bold); margin: var(--space-2) 0;">8 điểm</p>
+        <p style="text-align:center; color:var(--color-success); font-weight:var(--font-weight-bold);">🏆 Kỷ lục mới!</p>
+        <div class="btn">Chơi lại</div>
+      </div>
+      <p class="caption">Màn hình kết thúc — trường hợp vừa phá kỷ lục điểm cao nhất</p>
+    </div>
+    <ul>
+      <li>Thông báo "Hết giờ!".</li>
+      <li><strong>Điểm của lượt này.</strong></li>
+      <li><strong>Điểm cao nhất</strong>; nếu vừa phá kỷ lục thì hiển thị thêm "Kỷ lục mới!" (nếu không phá kỷ lục, vẫn hiện điểm cao nhất hiện có, không hiện dòng "Kỷ lục mới!").</li>
+      <li>Nút <strong>"Chơi lại"</strong>: bắt đầu ngay một lượt mới (điểm về 0, thời gian về 30 giây), tương đương bấm lại "Bắt đầu" ở màn hình đầu.</li>
+    </ul>
+
+    <h2>3.4. Yêu cầu hiển thị chung</h2>
+    <ul>
+      <li>Hiển thị gọn trên màn hình điện thoại rộng <strong>375px</strong> mà không cuộn ngang.</li>
+      <li>Không dùng âm thanh/nhạc (ngoài phạm vi phiên bản này).</li>
+      <li>Icon chuột và hang dùng SVG tự vẽ theo bộ màu <code>design/tokens.css</code>, không dùng ảnh/logo ngoài.</li>
+    </ul>
+
+    <div class="pager">
+      <a href="02-chuc-nang.html">← 2. Chức năng</a>
+      <a href="04-quy-tac-du-lieu.html">Tiếp: 4. Quy tắc &amp; dữ liệu →</a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

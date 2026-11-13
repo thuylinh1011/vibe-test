@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2. Chức năng — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
+    <a class="item active" href="02-chuc-nang.html">2. Chức năng</a>
+    <a class="item" href="03-man-hinh.html">3. Màn hình</a>
+    <a class="item" href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>
+    <a class="item" href="05-ke-hoach-test.html">5. Kế hoạch test</a>
+  </nav>
+  <main>
+    <p class="eyebrow">Tài liệu 2/5</p>
+    <h1>Chức năng</h1>
+
+    <h2>2.1. Luật chơi</h2>
+    <ol>
+      <li>Bảng chơi là lưới <strong>3×3 = 9 ô</strong> (9 cái hang).</li>
+      <li>Mỗi lượt chơi kéo dài <strong>30 giây</strong>, bắt đầu đếm ngược khi người chơi bấm <strong>"Bắt đầu"</strong>.</li>
+      <li>Tại mỗi thời điểm có <strong>tối đa 1 con chuột</strong> trên lưới.</li>
+      <li>Chuột trồi lên ở một ô ngẫu nhiên và ở lại trong khoảng <strong>0,8 giây</strong>, sau đó tự lặn xuống.</li>
+      <li>Ô xuất hiện tiếp theo <strong>không trùng</strong> với ô vừa xuất hiện ngay trước đó.</li>
+      <li>Khi chuột bị đập trúng hoặc tự lặn xuống, sau khoảng <strong>0,3 giây</strong> con chuột tiếp theo sẽ xuất hiện.</li>
+      <li>Người chơi bấm (click chuột trên máy tính, chạm trên điện thoại, hoặc <code>Enter</code>/<code>Space</code> khi ô đang được focus bằng bàn phím) vào ô có chuột để đập.</li>
+      <li>Khi hết 30 giây: chuột biến mất, lưới không nhận thao tác nữa, chuyển sang màn hình kết thúc.</li>
+    </ol>
+
+    <h2>2.2. Cách điều khiển</h2>
+    <table class="decision-table">
+      <tr><th>Thiết bị</th><th>Cách thao tác</th></tr>
+      <tr><td>Máy tính — chuột</td><td>Click vào ô đang có chuột.</td></tr>
+      <tr><td>Điện thoại / máy tính bảng</td><td>Chạm (tap) vào ô đang có chuột.</td></tr>
+      <tr><td>Bàn phím</td><td><code>Tab</code> / <code>Shift+Tab</code> để di chuyển focus qua lại giữa 9 ô theo thứ tự trên lưới; <code>Enter</code> hoặc <code>Space</code> để "đập" ô đang focus. Focus hiện rõ viền để biết đang ở ô nào.</td></tr>
+    </table>
+    <p>Cả ba cách điều khiển dùng chung một hành động lõi: "đập ô X" — không phân biệt kết quả tính điểm theo thiết bị.</p>
+
+    <h2>2.3. Cách tính điểm</h2>
+    <table class="decision-table">
+      <tr><th>Hành động</th><th>Điểm</th></tr>
+      <tr><td>Bấm/chạm/nhấn phím trúng ô đang có chuột</td><td><strong>+1</strong></td></tr>
+      <tr><td>Bấm vào ô trống</td><td>0 (không trừ điểm)</td></tr>
+      <tr><td>Để chuột tự lặn xuống (không bấm kịp)</td><td>0 (không trừ điểm)</td></tr>
+    </table>
+    <ul>
+      <li>Mỗi con chuột chỉ tính điểm <strong>một lần</strong>: bấm nhiều lần vào cùng một con chỉ được 1 điểm. Chuột bị đập trúng biến mất ngay.</li>
+      <li>Điểm bắt đầu từ <strong>0</strong> ở mỗi lượt mới.</li>
+    </ul>
+
+    <h2>2.4. Điểm cao nhất</h2>
+    <ul>
+      <li>Điểm cao nhất được lưu trên trình duyệt (localStorage) — vẫn còn sau khi tải lại trang.</li>
+      <li>Nếu trình duyệt không cho lưu (ví dụ chế độ ẩn danh chặn storage), game vẫn chơi bình thường, chỉ không giữ được điểm cao nhất giữa các lần tải trang — không được coi là lỗi chặn luồng chơi.</li>
+      <li>Điểm cao nhất chỉ cập nhật khi điểm của lượt vừa chơi <strong>lớn hơn</strong> điểm cao nhất đang lưu.</li>
+    </ul>
+
+    <h2>2.5. Xử lý khi rời/quay lại tab</h2>
+    <p>Khi người chơi chuyển sang tab/ứng dụng khác trong lúc đang chơi rồi quay lại:</p>
+    <ul>
+      <li>Thời gian còn lại được tính lại dựa trên <strong>mốc thời gian thực</strong> (timestamp lúc bắt đầu lượt), không dựa vào số lần "tick" đã chạy.</li>
+      <li>Nếu thời gian thực đã trôi qua vượt 30 giây trong lúc tab bị ẩn, lượt chơi được coi là đã kết thúc ngay khi quay lại — chuyển thẳng sang màn hình kết thúc với điểm đã có.</li>
+      <li>Không tạm dừng đếm giờ hay việc chuột xuất hiện/lặn khi tab bị ẩn — xem chi tiết công thức ở mục <a href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>.</li>
+    </ul>
+
+    <h2>2.6. Vòng đời một lượt chơi</h2>
+    <ol>
+      <li><strong>Chờ bắt đầu</strong> — màn hình bắt đầu, chưa tính giờ, chưa có chuột.</li>
+      <li><strong>Đang chơi</strong> — từ lúc bấm "Bắt đầu" đến khi hết 30 giây; điểm và thời gian cập nhật liên tục; chuột xuất hiện/lặn theo luật ở mục 2.1.</li>
+      <li><strong>Kết thúc</strong> — hiện màn hình kết thúc với điểm lượt này, điểm cao nhất; lưới không còn nhận thao tác.</li>
+      <li><strong>Chơi lại</strong> — bấm nút "Chơi lại" ở màn hình kết thúc để quay lại bước 2 với điểm = 0, thời gian = 30s (không tạo ra hai đồng hồ chạy song song).</li>
+    </ol>
+
+    <div class="pager">
+      <a href="01-tong-quan.html">← 1. Tổng quan</a>
+      <a href="03-man-hinh.html">Tiếp: 3. Màn hình →</a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mục lục — Tài liệu game Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: var(--line-height-body);
+  }
+  header.topbar {
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+    padding: var(--space-6) var(--space-5);
+  }
+  header.topbar .eyebrow {
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--c-blue-300);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--space-2) 0;
+  }
+  header.topbar h1 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-display);
+    margin: 0 0 var(--space-3) 0;
+  }
+  header.topbar p {
+    margin: 0;
+    max-width: 640px;
+    color: var(--c-gray-200);
+    font-size: var(--font-size-md);
+  }
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-5) var(--space-9);
+  }
+  .doc-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    margin-top: var(--space-5);
+  }
+  a.doc-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: var(--transition-fast);
+  }
+  a.doc-card:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-card);
+  }
+  .doc-card .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-circle);
+    background: var(--color-accent);
+    color: var(--color-accent-text);
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-3);
+  }
+  .doc-card h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--space-2) 0;
+  }
+  .doc-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+  section.notice {
+    margin-top: var(--space-6);
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  footer {
+    text-align: center;
+    padding: var(--space-6) var(--space-5);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <p class="eyebrow">Tài liệu thiết kế &amp; đặc tả</p>
+    <h1>🐭 Mini game Đập Chuột</h1>
+    <p>Bộ tài liệu mô tả tổng quan, chức năng, màn hình, quy tắc/dữ liệu và kế hoạch kiểm thử cho mini game đập chuột chạy trên trình duyệt. Tài liệu này mới chỉ đặc tả yêu cầu — chưa có code game.</p>
+  </header>
+  <main>
+    <nav class="doc-grid">
+      <a class="doc-card" href="01-tong-quan.html">
+        <span class="num">1</span>
+        <h2>Tổng quan</h2>
+        <p>Mục tiêu, phạm vi, ngoài phạm vi và các quyết định thiết kế đã chốt.</p>
+      </a>
+      <a class="doc-card" href="02-chuc-nang.html">
+        <span class="num">2</span>
+        <h2>Chức năng</h2>
+        <p>Luật chơi, cách tính điểm, cách điều khiển (chuột/chạm/bàn phím), điểm cao nhất.</p>
+      </a>
+      <a class="doc-card" href="03-man-hinh.html">
+        <span class="num">3</span>
+        <h2>Màn hình</h2>
+        <p>Mô tả và minh hoạ 3 màn hình: bắt đầu, chơi, kết thúc.</p>
+      </a>
+      <a class="doc-card" href="04-quy-tac-du-lieu.html">
+        <span class="num">4</span>
+        <h2>Quy tắc &amp; dữ liệu</h2>
+        <p>Máy trạng thái, hằng số thời gian, quy tắc ngẫu nhiên, mô hình dữ liệu lưu trữ.</p>
+      </a>
+      <a class="doc-card" href="05-ke-hoach-test.html">
+        <span class="num">5</span>
+        <h2>Kế hoạch test</h2>
+        <p>Bảng test case đối chiếu với tiêu chí hoàn thành trong YEU-CAU.md.</p>
+      </a>
+    </nav>
+    <section class="notice">
+      Nguồn yêu cầu gốc: <code>YEU-CAU.md</code>. Giao diện tài liệu dùng chung design token tại <code>design/tokens.css</code>. Giai đoạn này <strong>chưa viết code game</strong> — chỉ hoàn thiện đặc tả.
+    </section>
+  </main>
+  <footer>Đập Chuột — Tài liệu đặc tả · Cập nhật 2026-11-13</footer>
+</body>
+</html>

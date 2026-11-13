@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Tổng quan — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="item active" href="01-tong-quan.html">1. Tổng quan</a>
+    <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
+    <a class="item" href="03-man-hinh.html">3. Màn hình</a>
+    <a class="item" href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>
+    <a class="item" href="05-ke-hoach-test.html">5. Kế hoạch test</a>
+  </nav>
+  <main>
+    <p class="eyebrow">Tài liệu 1/5</p>
+    <h1>Tổng quan</h1>
+
+    <div class="card">
+      <p><strong>Đập Chuột</strong> là mini game chạy trên trình duyệt: người chơi bấm vào con chuột xuất hiện ngẫu nhiên trên lưới 3×3 để ghi điểm trong 30 giây mỗi lượt. Không cần máy chủ, không cần đăng nhập — mở trang là chơi được ngay, trên máy tính hoặc điện thoại.</p>
+    </div>
+
+    <h2>Phạm vi</h2>
+    <p>Trong phạm vi phiên bản này:</p>
+    <div>
+      <span class="tag in">Chạy trên trình duyệt hiện đại (Chrome, Safari, Firefox, Edge)</span>
+      <span class="tag in">Máy tính &amp; điện thoại</span>
+      <span class="tag in">Không cần máy chủ / đăng nhập</span>
+      <span class="tag in">Một người chơi, một thiết bị</span>
+      <span class="tag in">Lưu điểm cao nhất trên trình duyệt (localStorage)</span>
+    </div>
+    <p>Ngoài phạm vi (chưa làm ở phiên bản này):</p>
+    <div>
+      <span class="tag out">Nhiều cấp độ khó</span>
+      <span class="tag out">Bảng xếp hạng online</span>
+      <span class="tag out">Âm thanh / nhạc nền</span>
+      <span class="tag out">Nhiều loại chuột khác nhau</span>
+      <span class="tag out">Đa ngôn ngữ (chỉ tiếng Việt)</span>
+    </div>
+
+    <h2>Các quyết định thiết kế đã chốt</h2>
+    <p>Các câu hỏi dưới đây đã được làm rõ trước khi viết đặc tả chi tiết:</p>
+    <table class="decision-table">
+      <tr><th>Chủ đề</th><th>Quyết định</th></tr>
+      <tr>
+        <td>Hình ảnh chuột &amp; hang</td>
+        <td>Vẽ icon SVG tự thiết kế, dùng đúng bộ màu trong <code>design/tokens.css</code> (đen/trắng + xanh dương nhấn), không dùng ảnh/logo bên ngoài.</td>
+      </tr>
+      <tr>
+        <td>Ngôn ngữ</td>
+        <td>Chỉ tiếng Việt, không cần bản dịch tiếng Anh.</td>
+      </tr>
+      <tr>
+        <td>Xử lý khi chuyển tab</td>
+        <td>Dùng mốc thời gian thực (timestamp) để tính giây còn lại — khi quay lại tab, thời gian tự "nhảy" đúng với thực tế đã trôi qua, không tạm dừng đồng hồ.</td>
+      </tr>
+      <tr>
+        <td>Hỗ trợ bàn phím</td>
+        <td>Có — hỗ trợ <code>Tab</code> để di chuyển focus qua các ô và <code>Enter</code>/<code>Space</code> để "đập" ô đang focus, bên cạnh click/chạm.</td>
+      </tr>
+      <tr>
+        <td>Cấu trúc file khi code</td>
+        <td>Một file HTML duy nhất (nhúng CSS + JS), mở trực tiếp bằng trình duyệt là chạy, không cần build hay máy chủ.</td>
+      </tr>
+    </table>
+
+    <h2>Người dùng mục tiêu</h2>
+    <p>Người chơi giải trí ngắn hạn (casual), không cần hướng dẫn phức tạp. Một lượt chơi chỉ kéo dài 30 giây nên trải nghiệm phải tức thời: mở trang → bấm Bắt đầu → chơi → thấy kết quả → chơi lại.</p>
+
+    <h2>Nguồn yêu cầu</h2>
+    <p>Tài liệu này diễn giải và bổ sung chi tiết cho <code>YEU-CAU.md</code> ở gốc repo. Khi có mâu thuẫn, <code>YEU-CAU.md</code> và các quyết định ở bảng trên là nguồn đúng nhất.</p>
+
+    <div class="pager">
+      <a href="index.html">← Mục lục</a>
+      <a href="02-chuc-nang.html">Tiếp: 2. Chức năng →</a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

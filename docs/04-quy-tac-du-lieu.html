@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4. Quy tắc &amp; dữ liệu — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
+    <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
+    <a class="item" href="03-man-hinh.html">3. Màn hình</a>
+    <a class="item active" href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>
+    <a class="item" href="05-ke-hoach-test.html">5. Kế hoạch test</a>
+  </nav>
+  <main>
+    <p class="eyebrow">Tài liệu 4/5</p>
+    <h1>Quy tắc &amp; dữ liệu</h1>
+    <p>Mục này đặc tả chi tiết kỹ thuật để lúc code không phải tự suy đoán: hằng số thời gian, máy trạng thái, quy tắc chọn ô ngẫu nhiên, công thức xử lý tab ẩn, và dữ liệu lưu trữ.</p>
+
+    <h2>4.1. Hằng số</h2>
+    <table class="data-table">
+      <tr><th>Tên</th><th>Giá trị</th><th>Ghi chú</th></tr>
+      <tr><td><code>ROUND_DURATION_MS</code></td><td>30000</td><td>Thời lượng một lượt chơi (30 giây).</td></tr>
+      <tr><td><code>MOUSE_VISIBLE_MS</code></td><td>800</td><td>Chuột trồi lên và ở lại tối đa trong khoảng này trước khi tự lặn.</td></tr>
+      <tr><td><code>GAP_AFTER_MOUSE_MS</code></td><td>300</td><td>Khoảng nghỉ giữa lúc một con chuột biến mất (bị đập hoặc tự lặn) và con tiếp theo xuất hiện.</td></tr>
+      <tr><td><code>GRID_SIZE</code></td><td>3 × 3 = 9 ô</td><td>Đánh số ô từ 0 đến 8 theo thứ tự trái→phải, trên→dưới.</td></tr>
+      <tr><td><code>LOW_TIME_THRESHOLD_S</code></td><td>5</td><td>Khi thời gian còn lại ≤ 5 giây, đồng hồ đổi màu <code>--color-danger</code>.</td></tr>
+      <tr><td><code>MIN_TAP_TARGET_PX</code></td><td>44</td><td>Kích thước tối thiểu mỗi ô để chạm thoải mái trên điện thoại (chuẩn control-height-lg trong tokens).</td></tr>
+    </table>
+
+    <h2>4.2. Máy trạng thái lượt chơi</h2>
+    <table class="data-table">
+      <tr><th>Trạng thái</th><th>Điều kiện vào</th><th>Điều kiện ra</th></tr>
+      <tr><td><code>idle</code></td><td>Mới mở trang, hoặc chưa từng bấm "Bắt đầu"</td><td>Bấm "Bắt đầu" → <code>playing</code></td></tr>
+      <tr><td><code>playing</code></td><td>Vào từ <code>idle</code>/<code>finished</code> qua "Bắt đầu"/"Chơi lại"; set <code>score=0</code>, <code>startTime=Date.now()</code>, sinh ô chuột đầu tiên</td><td>Thời gian còn lại = 0 → <code>finished</code></td></tr>
+      <tr><td><code>finished</code></td><td>Hết 30 giây (theo thời gian thực); dừng mọi hẹn giờ chuột; khoá input trên lưới</td><td>Bấm "Chơi lại" → <code>playing</code></td></tr>
+    </table>
+    <p>Chỉ có đúng một hẹn giờ đếm ngược và một chuỗi hẹn giờ xuất-hiện-chuột hoạt động tại một thời điểm. Khi chuyển trạng thái, phải huỷ (clear) toàn bộ hẹn giờ của trạng thái cũ trước khi tạo hẹn giờ mới — tránh chạy chồng hai đồng hồ khi bấm "Chơi lại" nhiều lần liên tiếp.</p>
+
+    <h2>4.3. Quy tắc chọn ô xuất hiện chuột</h2>
+    <ol>
+      <li>Chọn ngẫu nhiên đều (uniform random) một chỉ số ô trong 9 ô.</li>
+      <li>Nếu chỉ số vừa chọn <strong>trùng với ô vừa xuất hiện ngay trước đó</strong> (<code>lastCellIndex</code>), chọn lại cho đến khi khác, hoặc tương đương: chọn ngẫu nhiên trong tập 8 ô còn lại (loại <code>lastCellIndex</code>).</li>
+      <li>Lượt chuột đầu tiên của mỗi lượt chơi không có "ô trước đó" nên có thể rơi vào bất kỳ ô nào trong 9 ô.</li>
+      <li>Sau khi chọn, lưu chỉ số này làm <code>lastCellIndex</code> cho lần chọn tiếp theo.</li>
+    </ol>
+
+    <h2>4.4. Công thức thời gian (chống lệch khi đổi tab)</h2>
+    <p>Không dùng cách đếm lùi bằng cộng/trừ mỗi tick (vì <code>setInterval</code> bị trình duyệt tạm ngưng/làm chậm khi tab ẩn). Thay vào đó:</p>
+    <div class="card">
+      <code>remainingMs = ROUND_DURATION_MS - (Date.now() - startTime)</code>
+    </div>
+    <ul>
+      <li>Mỗi lần cập nhật UI (ví dụ qua <code>requestAnimationFrame</code> hoặc <code>setInterval</code> ngắn), tính lại <code>remainingMs</code> từ mốc <code>startTime</code> cố định, không tích lũy sai số.</li>
+      <li>Khi tab quay lại từ trạng thái ẩn (sự kiện <code>visibilitychange</code>), tính lại <code>remainingMs</code> ngay lập tức bằng công thức trên; nếu kết quả ≤ 0, chuyển trạng thái sang <code>finished</code> ngay (xem 4.2), không chờ tick tiếp theo.</li>
+      <li>Việc chuột xuất hiện/lặn cũng dùng hẹn giờ dựa trên thời gian thực tương tự, không tạm dừng khi tab ẩn — tức là khi quay lại tab, con chuột đang "lên" khi tab bị ẩn có thể đã tự lặn hoặc đã có con khác thay thế, đúng như mô tả trong <a href="02-chuc-nang.html">2.5</a>.</li>
+    </ul>
+
+    <h2>4.5. Mô hình dữ liệu lưu trữ</h2>
+    <p>Lưu trong <code>localStorage</code>, một khoá duy nhất:</p>
+    <table class="data-table">
+      <tr><th>Khoá</th><th>Kiểu giá trị</th><th>Ví dụ</th><th>Mô tả</th></tr>
+      <tr><td><code>dap-chuot:highScore</code></td><td>chuỗi số nguyên ≥ 0</td><td><code>"12"</code></td><td>Điểm cao nhất từng đạt được. Không tồn tại nếu chưa chơi lượt nào.</td></tr>
+    </table>
+    <ul>
+      <li>Đọc khoá này khi tải trang để hiển thị ở màn hình bắt đầu; nếu không có hoặc không đọc được (storage bị chặn/lỗi), coi như chưa có điểm cao nhất và ẩn dòng hiển thị tương ứng — không chặn luồng chơi.</li>
+      <li>Ghi lại khoá này ngay khi vào <code>finished</code> nếu <code>score > highScore</code> hiện tại; mọi lỗi khi ghi (ví dụ storage đầy/bị chặn) phải được bắt (try/catch) và bỏ qua lặng lẽ.</li>
+    </ul>
+
+    <h2>4.6. Dữ liệu trong bộ nhớ (runtime state)</h2>
+    <table class="data-table">
+      <tr><th>Trường</th><th>Kiểu</th><th>Mô tả</th></tr>
+      <tr><td><code>gameState</code></td><td><code>"idle" | "playing" | "finished"</code></td><td>Trạng thái hiện tại theo mục 4.2.</td></tr>
+      <tr><td><code>score</code></td><td>số nguyên ≥ 0</td><td>Điểm của lượt đang/vừa chơi.</td></tr>
+      <tr><td><code>startTime</code></td><td>timestamp (ms)</td><td>Thời điểm bắt đầu lượt hiện tại, dùng cho công thức ở 4.4.</td></tr>
+      <tr><td><code>activeCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Ô đang có chuột; <code>null</code> nếu không có con nào đang hiện.</td></tr>
+      <tr><td><code>lastCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Ô vừa xuất hiện trước đó, dùng để loại trừ theo mục 4.3.</td></tr>
+      <tr><td><code>caughtCellIndex</code></td><td>Set các chỉ số lượt chuột đã tính điểm</td><td>Đảm bảo một con chuột (một lần xuất hiện) chỉ tính điểm một lần dù bấm nhiều lần, theo mục 2.3.</td></tr>
+    </table>
+
+    <div class="pager">
+      <a href="03-man-hinh.html">← 3. Màn hình</a>
+      <a href="05-ke-hoach-test.html">Tiếp: 5. Kế hoạch test →</a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

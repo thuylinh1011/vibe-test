@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5. Kế hoạch test — Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <nav class="side">
+    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
+    <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
+    <a class="item" href="03-man-hinh.html">3. Màn hình</a>
+    <a class="item" href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>
+    <a class="item active" href="05-ke-hoach-test.html">5. Kế hoạch test</a>
+  </nav>
+  <main>
+    <p class="eyebrow">Tài liệu 5/5</p>
+    <h1>Kế hoạch test</h1>
+    <p>Mỗi test case đối chiếu trực tiếp với một mục tiêu chí hoàn thành trong <code>YEU-CAU.md</code>. <span class="badge p0">P0</span> = phải đúng để coi là hoàn thành; <span class="badge p1">P1</span> = quan trọng nhưng không chặn release; <span class="badge p2">P2</span> = phụ.</p>
+
+    <h2>5.1. Chức năng cốt lõi</h2>
+    <table class="test-table">
+      <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
+      <tr>
+        <td>F1</td>
+        <td>Mở trang không lỗi</td>
+        <td>Mở file HTML trực tiếp bằng trình duyệt; mở DevTools Console.</td>
+        <td>Thấy màn hình bắt đầu; Console không có lỗi đỏ.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F2</td>
+        <td>Bấm "Bắt đầu" khởi động đồng hồ</td>
+        <td>Bấm nút "Bắt đầu".</td>
+        <td>Thời gian hiển thị bắt đầu chạy từ 30 về 0; chuột đầu tiên xuất hiện.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F3</td>
+        <td>Lưới đúng 3×3</td>
+        <td>Quan sát bố cục lưới ở màn hình chơi.</td>
+        <td>Đúng 9 ô, xếp 3 hàng × 3 cột.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F4</td>
+        <td>Chỉ 1 chuột tại một thời điểm, vị trí ngẫu nhiên không lặp ô liền trước</td>
+        <td>Quan sát 15–20 lượt chuột xuất hiện liên tiếp, ghi lại vị trí mỗi lần.</td>
+        <td>Không có thời điểm nào thấy ≥ 2 chuột cùng lúc; không có 2 lần xuất hiện liên tiếp ở cùng một ô.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F5</td>
+        <td>Đập trúng chuột +1 điểm, chuột biến mất ngay</td>
+        <td>Bấm đúng ô đang có chuột.</td>
+        <td>Điểm tăng thêm đúng 1; chuột biến mất ngay lập tức.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F6</td>
+        <td>Bấm liên tục vào cùng một con chuột chỉ tính 1 điểm</td>
+        <td>Bấm rất nhanh nhiều lần vào ô đang có chuột trong cùng một lượt xuất hiện.</td>
+        <td>Điểm chỉ tăng +1 cho con chuột đó, không tăng thêm dù bấm thêm.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F7</td>
+        <td>Bấm ô trống không đổi điểm</td>
+        <td>Bấm vào một ô không có chuột.</td>
+        <td>Điểm không thay đổi.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F8</td>
+        <td>Để chuột tự lặn không bị trừ điểm</td>
+        <td>Không bấm, để chuột tự lặn xuống sau ~0,8s.</td>
+        <td>Điểm không thay đổi; con chuột tiếp theo xuất hiện sau ~0,3s.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>F9</td>
+        <td>Lượt kết thúc đúng sau 30 giây</td>
+        <td>Bấm giờ ngoài (điện thoại) từ lúc bấm "Bắt đầu" đến lúc chuyển màn hình kết thúc.</td>
+        <td>Sai lệch không quá 1 giây so với 30s.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F10</td>
+        <td>Hết giờ thì lưới không nhận thao tác nữa</td>
+        <td>Sau khi màn hình kết thúc hiện ra, thử bấm vào vùng lưới (nếu còn hiển thị).</td>
+        <td>Không có gì xảy ra, điểm không đổi.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F11</td>
+        <td>Màn hình kết thúc hiển thị đúng điểm lượt vừa chơi</td>
+        <td>Ghi lại điểm hiển thị trên HUD ngay trước khi hết giờ, so với điểm ở màn hình kết thúc.</td>
+        <td>Hai số khớp nhau.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F12</td>
+        <td>"Chơi lại" reset đúng, không chạy chồng đồng hồ</td>
+        <td>Ở màn hình kết thúc, bấm "Chơi lại" nhiều lần nhanh liên tiếp (double click).</td>
+        <td>Điểm về 0, thời gian về 30s, chỉ có một đồng hồ/một chuỗi chuột chạy — không thấy thời gian nhảy bất thường hoặc 2 chuột cùng lúc.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F13</td>
+        <td>Điểm cao nhất cập nhật và còn lại sau khi tải lại trang</td>
+        <td>Chơi 1 lượt đạt điểm X &gt; điểm cao nhất hiện có; tải lại trang (F5/Cmd+R).</td>
+        <td>Màn hình bắt đầu hiển thị điểm cao nhất = X.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F14</td>
+        <td>Điểm thấp hơn không ghi đè điểm cao nhất</td>
+        <td>Sau khi đã có điểm cao nhất, chơi một lượt đạt điểm thấp hơn.</td>
+        <td>Điểm cao nhất hiển thị không đổi.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+    </table>
+
+    <h2>5.2. Giao diện &amp; trải nghiệm</h2>
+    <table class="test-table">
+      <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
+      <tr>
+        <td>U1</td>
+        <td>Chơi được bằng chuột trên máy tính</td>
+        <td>Chơi thử một lượt đầy đủ bằng click chuột.</td>
+        <td>Mọi thao tác hoạt động như mô tả ở mục 2.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>U2</td>
+        <td>Chơi được bằng cảm ứng trên điện thoại</td>
+        <td>Mở trên điện thoại thật hoặc chế độ giả lập điện thoại trong DevTools, chơi một lượt bằng chạm.</td>
+        <td>Tap trúng ô có chuột được tính điểm; không cần zoom để bấm trúng.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>U3</td>
+        <td>Không cuộn ngang ở màn hình rộng 375px</td>
+        <td>Đặt viewport giả lập 375px (ví dụ iPhone SE) ở cả 3 màn hình.</td>
+        <td>Không xuất hiện thanh cuộn ngang; mọi nội dung nằm trong khung nhìn.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>U4</td>
+        <td>Điểm &amp; thời gian luôn nhìn thấy khi chơi</td>
+        <td>Quan sát trong suốt lượt chơi, kể cả khi chuột đang xuất hiện ở các vị trí khác nhau.</td>
+        <td>HUD điểm/thời gian không bị che hoặc biến mất.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>U5</td>
+        <td>Phản hồi khi đập trúng tức thời</td>
+        <td>Đập trúng một con chuột, quan sát bằng mắt.</td>
+        <td>Hiệu ứng đổi hình/nhấp nháy và điểm cập nhật cùng lúc, không có độ trễ nhận thấy được.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>U6</td>
+        <td>Đồng hồ đổi màu đỏ 5 giây cuối</td>
+        <td>Quan sát đồng hồ khi còn 5, 4, 3, 2, 1 giây.</td>
+        <td>Số thời gian có màu đỏ (<code>--color-danger</code>) trong 5 giây cuối, màu thường ở các giây trước đó.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>U7</td>
+        <td>Chơi bằng bàn phím (Tab + Enter/Space)</td>
+        <td>Không dùng chuột/chạm; dùng <code>Tab</code> để focus qua các ô, <code>Enter</code>/<code>Space</code> để đập.</td>
+        <td>Focus hiển thị rõ; đập trúng ô có chuột bằng phím được tính điểm giống như click.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+    </table>
+
+    <h2>5.3. Kỹ thuật</h2>
+    <table class="test-table">
+      <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
+      <tr>
+        <td>T1</td>
+        <td>Chạy được khi mở trực tiếp file, không cần máy chủ</td>
+        <td>Mở file HTML bằng cách double-click / kéo vào trình duyệt (giao thức <code>file://</code>), không chạy qua server nào.</td>
+        <td>Game hoạt động đầy đủ như khi chạy qua server.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>T2</td>
+        <td>Chuyển tab rồi quay lại không lỗi, thời gian tính đúng</td>
+        <td>Đang chơi, chuyển sang tab khác trong khoảng 10 giây, rồi quay lại tab game.</td>
+        <td>Thời gian còn lại giảm đúng bằng thời gian thực đã trôi qua (theo công thức ở mục 4.4); không bị kẹt, không lỗi console.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>T3</td>
+        <td>Chuyển tab lâu hơn thời gian còn lại</td>
+        <td>Đang chơi còn ví dụ 5 giây, chuyển tab trong 20 giây rồi quay lại.</td>
+        <td>Lượt chơi tự chuyển sang màn hình kết thúc ngay khi quay lại, không chờ hẹn giờ tiếp theo.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>T4</td>
+        <td>localStorage bị chặn (chế độ ẩn danh/ hạn chế)</td>
+        <td>Chặn storage của trình duyệt (hoặc mở ở chế độ hạn chế lưu trữ), chơi thử.</td>
+        <td>Game vẫn chơi được bình thường; chỉ không giữ điểm cao nhất qua lần tải lại; không có lỗi chặn luồng chơi.</td>
+        <td><span class="badge p2">P2</span></td>
+      </tr>
+    </table>
+
+    <h2>5.4. Ghi chú thực hiện test</h2>
+    <ul>
+      <li>Test ở ít nhất 2 trình duyệt khác nhau (ví dụ Chrome + Safari) và 1 thiết bị di động thật trước khi coi là hoàn thành.</li>
+      <li>Các test có yếu tố thời gian (F9, T2, T3) nên lặp lại 2–3 lần để loại trừ sai số ngẫu nhiên.</li>
+      <li>Giai đoạn hiện tại tài liệu này chỉ là kế hoạch — chưa có code để chạy, các test case sẽ được thực hiện sau khi game được triển khai.</li>
+    </ul>
+
+    <div class="pager">
+      <a href="04-quy-tac-du-lieu.html">← 4. Quy tắc &amp; dữ liệu</a>
+      <a href="index.html">Về mục lục →</a>
+    </div>
+  </main>
+</div>
+</body>
+</html>
