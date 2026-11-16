@@ -1,0 +1,175 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: var(--line-height-body);
+}
+
+.game {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Hiện đúng 1 màn hình theo trạng thái game (idle/playing/finished) */
+.screen { display: none; }
+.game[data-state="idle"] .screen-start { display: block; }
+.game[data-state="playing"] .screen-play { display: block; }
+.game[data-state="finished"] .screen-end { display: block; }
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-2xl);
+  letter-spacing: var(--letter-spacing-display);
+  margin: 0 0 var(--space-3);
+}
+
+.tagline {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  margin: 0 0 var(--space-4);
+}
+
+.high-score,
+.end-high {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--control-height-md);
+  padding: 0 var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.btn-primary { background: var(--color-accent); color: var(--color-accent-text); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.btn-lg { height: var(--control-height-lg); font-size: var(--font-size-lg); }
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  padding: 0 var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.hud-time {
+  transition: color var(--transition-fast);
+}
+.hud-time.low-time {
+  color: var(--color-danger);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+.cell:hover { border-color: var(--color-border-strong); }
+.cell:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.cell-hole {
+  position: absolute;
+  bottom: 14%;
+  width: 56%;
+  height: 28%;
+}
+.cell-hole ellipse { fill: var(--color-border-strong); }
+
+.cell-mouse {
+  position: relative;
+  width: 62%;
+  height: 62%;
+  opacity: 0;
+  transform: translateY(45%) scale(0.5);
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+.cell.has-mouse .cell-mouse {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.cell.caught .cell-mouse {
+  opacity: 0;
+  transform: translateY(-10%) scale(1.2);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.mouse-body,
+.mouse-ear { fill: var(--color-accent); }
+.mouse-eye { fill: var(--color-bg); }
+.mouse-nose { fill: var(--color-inverse-bg); }
+
+.end-score {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-3xl);
+  margin: 0 0 var(--space-2);
+}
+
+.end-record {
+  color: var(--color-success);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-5);
+}
+
+@media (max-width: 400px) {
+  body { padding: var(--space-4); }
+  .panel { padding: var(--space-5) var(--space-4); }
+}

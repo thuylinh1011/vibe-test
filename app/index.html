@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Đập Chuột</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game" id="game" data-state="idle">
+
+    <section class="screen screen-start" id="screenStart">
+      <div class="panel">
+        <h1 class="title">🐭 Đập Chuột</h1>
+        <p class="tagline">Bấm vào chuột càng nhiều càng tốt trong 30 giây.</p>
+        <p class="high-score" id="startHighScore"></p>
+        <button class="btn btn-primary btn-lg" id="btnStart" type="button">Bắt đầu</button>
+      </div>
+    </section>
+
+    <section class="screen screen-play" id="screenPlay">
+      <div class="hud">
+        <span class="hud-score">Điểm: <strong id="scoreValue">0</strong></span>
+        <span class="hud-time" id="timeValue">30s</span>
+      </div>
+      <div class="grid" id="grid" role="group" aria-label="Lưới 9 ô, bấm vào ô có chuột để ghi điểm"></div>
+    </section>
+
+    <section class="screen screen-end" id="screenEnd">
+      <div class="panel">
+        <h1 class="title">Hết giờ!</h1>
+        <p class="end-score" id="endScore">0 điểm</p>
+        <p class="end-high" id="endHighScore">Điểm cao nhất: 0</p>
+        <p class="end-record" id="endRecord" hidden>🏆 Kỷ lục mới!</p>
+        <button class="btn btn-primary btn-lg" id="btnRestart" type="button">Chơi lại</button>
+      </div>
+    </section>
+
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
