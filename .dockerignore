@@ -1,0 +1,9 @@
+.git
+node_modules
+docs
+YEU-CAU.md
+README.md
+.gitignore
+.dockerignore
+.DS_Store
+*.log

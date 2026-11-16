@@ -1,0 +1,10 @@
+{
+  "name": "dap-chuot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini game Đập Chuột — server Node.js nhỏ phục vụ file tĩnh trong app/",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
