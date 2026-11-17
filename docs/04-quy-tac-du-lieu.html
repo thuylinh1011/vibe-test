@@ -83,6 +83,48 @@
       <tr><td><code>caughtCellIndex</code></td><td>Set các chỉ số lượt chuột đã tính điểm</td><td>Đảm bảo một con chuột (một lần xuất hiện) chỉ tính điểm một lần dù bấm nhiều lần, theo mục 2.3.</td></tr>
     </table>
 
+    <h2>4.7. Đăng ký người chơi — quy tắc &amp; dữ liệu</h2>
+    <p><strong>Lưu ý:</strong> database dùng <strong>PostgreSQL</strong> (chạy như 1 service riêng trong Docker Compose, dữ liệu lưu qua volume) — không dùng SQLite, để dễ tách server/database và chịu tải tốt hơn khi cần.</p>
+    <table class="data-table">
+      <tr><th>Quy tắc</th><th>Chi tiết</th></tr>
+      <tr><td>Định dạng Họ tên</td><td>Không để trống sau khi trim, tối thiểu 2 ký tự.</td></tr>
+      <tr><td>Định dạng Email</td><td>Theo regex chuẩn dạng <code>ten@mien.tld</code>, ví dụ <code>^[^\s@]+@[^\s@]+\.[^\s@]+$</code>.</td></tr>
+      <tr><td>Định dạng Số điện thoại</td><td>Chỉ chữ số, có thể có <code>+</code> ở đầu; độ dài 9–11 chữ số (không tính dấu <code>+</code>).</td></tr>
+      <tr><td>Trùng email</td><td><strong>Không cho phép</strong>: server kiểm tra email đã tồn tại trong bảng <code>players</code> trước khi thêm mới; nếu trùng, từ chối với lỗi rõ ràng, không tạo bản ghi mới. Cột <code>email</code> có ràng buộc <code>UNIQUE</code> ở tầng database để đảm bảo toàn vẹn dữ liệu ngay cả khi có 2 yêu cầu gửi lên cùng lúc.</td></tr>
+    </table>
+    <table class="data-table">
+      <tr><th>Bảng</th><th>Cột</th><th>Kiểu</th><th>Ghi chú</th></tr>
+      <tr><td rowspan="5"><code>players</code></td><td><code>id</code></td><td>SERIAL, khoá chính</td><td>Tự tăng.</td></tr>
+      <tr><td><code>full_name</code></td><td>TEXT, NOT NULL</td><td>Họ tên.</td></tr>
+      <tr><td><code>email</code></td><td>TEXT, NOT NULL, UNIQUE</td><td>Dùng để chống đăng ký trùng.</td></tr>
+      <tr><td><code>phone</code></td><td>TEXT, NOT NULL</td><td>Số điện thoại.</td></tr>
+      <tr><td><code>created_at</code></td><td>TIMESTAMPTZ, NOT NULL, mặc định <code>now()</code></td><td>Thời điểm đăng ký.</td></tr>
+    </table>
+    <ul>
+      <li>localStorage key mới trên trình duyệt người chơi: <code>dap-chuot:playerId</code> — lưu id người chơi do server trả về sau khi đăng ký thành công, dùng để bỏ qua form đăng ký ở các lượt chơi sau trên cùng trình duyệt.</li>
+      <li>Máy trạng thái mở rộng trước <code>idle</code> (§4.2): <code>registration_check</code> → nếu đã có <code>playerId</code> hợp lệ lưu cục bộ thì vào thẳng <code>idle</code>; nếu chưa có thì vào <code>registering</code> (hiện form đăng ký) → đăng ký thành công → <code>idle</code>.</li>
+      <li>API: <code>POST /api/players</code> (tạo người chơi mới — 201 khi thành công, 400 khi sai định dạng, 409 khi email đã tồn tại).</li>
+    </ul>
+
+    <h2>4.8. Trang quản trị — xác thực &amp; dữ liệu</h2>
+    <ul>
+      <li>Tài khoản admin cấu hình qua biến môi trường <code>ADMIN_USERNAME</code>, <code>ADMIN_PASSWORD</code> (đặt trong file <code>.env</code>, không hard-code trong code nguồn, không lưu trong database).</li>
+      <li>Đăng nhập thành công tạo một phiên (session): server sinh token ngẫu nhiên, lưu trong bộ nhớ server kèm thời điểm hết hạn, gửi về trình duyệt qua cookie <code>HttpOnly</code>. Phiên hết hạn sau một khoảng thời gian cố định hoặc khi đăng xuất.</li>
+      <li>Mọi yêu cầu tới trang <code>/admin</code> và các API <code>/api/admin/*</code> đều phải có phiên hợp lệ; nếu không, trang quay về form đăng nhập còn API trả lỗi 401.</li>
+    </ul>
+    <table class="data-table">
+      <tr><th>API</th><th>Yêu cầu đăng nhập</th><th>Mô tả</th></tr>
+      <tr><td><code>POST /api/admin/login</code></td><td>Không</td><td>Kiểm tra tài khoản/mật khẩu, tạo phiên nếu đúng.</td></tr>
+      <tr><td><code>POST /api/admin/logout</code></td><td>Có</td><td>Huỷ phiên hiện tại.</td></tr>
+      <tr><td><code>GET /api/admin/players?search=...</code></td><td>Có</td><td>Danh sách người chơi, lọc theo họ tên/email/số điện thoại nếu có <code>search</code>.</td></tr>
+      <tr><td><code>DELETE /api/admin/players/:id</code></td><td>Có</td><td>Xoá vĩnh viễn 1 bản ghi theo id.</td></tr>
+      <tr><td><code>GET /api/admin/players/export.csv?search=...</code></td><td>Có</td><td>Xuất CSV danh sách đang xem (tôn trọng bộ lọc <code>search</code> nếu có).</td></tr>
+    </table>
+    <ul>
+      <li>File CSV xuất ra gồm các cột theo thứ tự: <code>id, ho_ten, email, so_dien_thoai, thoi_diem_dang_ky</code>; mã hoá UTF-8; có dòng tiêu đề.</li>
+      <li>Xoá bản ghi là xoá vĩnh viễn khỏi database, không có thùng rác/khôi phục — giao diện phải có bước xác nhận trước khi gọi API xoá.</li>
+    </ul>
+
     <div class="pager">
       <a href="03-man-hinh.html">← 3. Màn hình</a>
       <a href="05-ke-hoach-test.html">Tiếp: 5. Kế hoạch test →</a>

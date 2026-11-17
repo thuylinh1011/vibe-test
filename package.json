@@ -2,9 +2,12 @@
   "name": "dap-chuot",
   "version": "1.0.0",
   "private": true,
-  "description": "Mini game Đập Chuột — server Node.js nhỏ phục vụ file tĩnh trong app/",
+  "description": "Mini game Đập Chuột — server Node.js phục vụ app/, API đăng ký người chơi và trang quản trị",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.1"
   }
 }

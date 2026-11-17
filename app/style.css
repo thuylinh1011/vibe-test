@@ -22,8 +22,9 @@ body {
   max-width: 380px;
 }
 
-/* Hiện đúng 1 màn hình theo trạng thái game (idle/playing/finished) */
+/* Hiện đúng 1 màn hình theo trạng thái game (registering/idle/playing/finished) */
 .screen { display: none; }
+.game[data-state="registering"] .screen-register { display: block; }
 .game[data-state="idle"] .screen-start { display: block; }
 .game[data-state="playing"] .screen-play { display: block; }
 .game[data-state="finished"] .screen-end { display: block; }
@@ -168,6 +169,40 @@ body {
   font-weight: var(--font-weight-bold);
   margin: 0 0 var(--space-5);
 }
+
+.field {
+  display: block;
+  text-align: left;
+  margin-bottom: var(--space-4);
+}
+.field-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+}
+.field input {
+  display: block;
+  width: 100%;
+  height: var(--control-height-md);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+}
+.field input:focus { outline: none; border-color: var(--color-accent); }
+.field input.input-error { border-color: var(--color-danger); }
+.field-error {
+  display: block;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-2);
+  min-height: 1em;
+}
+#registerForm .btn { width: 100%; margin-top: var(--space-2); }
 
 @media (max-width: 400px) {
   body { padding: var(--space-4); }

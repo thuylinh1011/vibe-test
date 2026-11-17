@@ -77,6 +77,34 @@
       <li><strong>Chơi lại</strong> — bấm nút "Chơi lại" ở màn hình kết thúc để quay lại bước 2 với điểm = 0, thời gian = 30s (không tạo ra hai đồng hồ chạy song song).</li>
     </ol>
 
+    <h2>2.7. Đăng ký người chơi (trước khi chơi)</h2>
+    <ul>
+      <li>Trước khi vào được màn hình bắt đầu, hệ thống kiểm tra trình duyệt đã đăng ký chưa (dựa trên dữ liệu lưu cục bộ ở mục <a href="04-quy-tac-du-lieu.html">4.7</a>).</li>
+      <li>Nếu <strong>chưa đăng ký</strong>: hiện form yêu cầu nhập <strong>Họ tên</strong>, <strong>Email</strong>, <strong>Số điện thoại</strong> trước khi vào màn hình bắt đầu/chơi.</li>
+      <li>Các trường đều <strong>bắt buộc</strong>: Họ tên không để trống; Email đúng định dạng; Số điện thoại chỉ gồm chữ số (có thể có dấu <code>+</code> ở đầu), độ dài hợp lệ.</li>
+      <li>Bấm "Tiếp tục": kiểm tra định dạng ở trình duyệt trước, sau đó gửi lên server để lưu vào database. Server kiểm tra lại định dạng và <strong>kiểm tra email có bị trùng với người đã đăng ký trước đó không</strong>.</li>
+      <li>Nếu email đã tồn tại: báo lỗi rõ ràng (ví dụ "Email này đã được đăng ký"), không tạo bản ghi mới, cho người chơi sửa lại thông tin và thử lại.</li>
+      <li>Nếu lưu thành công: đánh dấu trình duyệt đã đăng ký (lưu lại định danh người chơi cục bộ), sau đó vào màn hình bắt đầu bình thường (các mục 2.1–2.6 không đổi).</li>
+      <li>Nếu gửi lên server thất bại (lỗi mạng/máy chủ): báo lỗi, cho thử lại, không chặn người chơi vĩnh viễn.</li>
+      <li>Nếu trình duyệt đã có dấu hiệu đăng ký trước đó, bỏ qua form, vào thẳng màn hình bắt đầu như luồng game gốc — không hỏi lại thông tin ở các lượt chơi sau trên cùng trình duyệt.</li>
+      <li>Việc đăng ký không ảnh hưởng đến luật chơi, cách tính điểm hay điểm cao nhất đã mô tả ở các mục 2.1–2.6.</li>
+    </ul>
+
+    <h2>2.8. Trang quản trị (Admin)</h2>
+    <ul>
+      <li>Có một trang quản trị riêng ở địa chỉ <code>/admin</code>, không có liên kết công khai từ giao diện người chơi.</li>
+      <li>Phải <strong>đăng nhập</strong> (1 tài khoản cố định, cấu hình qua biến môi trường — xem <a href="04-quy-tac-du-lieu.html">4.8</a>) mới xem được nội dung bên trong; chưa đăng nhập thì chỉ thấy form đăng nhập.</li>
+      <li>Sau khi đăng nhập, admin có thể:
+        <ul>
+          <li><strong>Xem</strong> danh sách người chơi đã đăng ký (họ tên, email, số điện thoại, thời điểm đăng ký).</li>
+          <li><strong>Tìm kiếm</strong> theo họ tên, email hoặc số điện thoại.</li>
+          <li><strong>Xoá</strong> một bản ghi (xoá vĩnh viễn, không khôi phục được).</li>
+          <li><strong>Xuất CSV</strong>: tải về danh sách hiện đang xem (toàn bộ hoặc theo kết quả tìm kiếm) dưới dạng file CSV.</li>
+        </ul>
+      </li>
+      <li>Phiên đăng nhập hết hạn sau một khoảng thời gian hoặc khi đăng xuất; truy cập <code>/admin</code> khi phiên không hợp lệ phải quay lại form đăng nhập, không lộ dữ liệu người chơi.</li>
+    </ul>
+
     <div class="pager">
       <a href="01-tong-quan.html">← 1. Tổng quan</a>
       <a href="03-man-hinh.html">Tiếp: 3. Màn hình →</a>

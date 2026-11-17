@@ -212,7 +212,115 @@
       </tr>
     </table>
 
-    <h2>5.4. Ghi chú thực hiện test</h2>
+    <h2>5.4. Đăng ký người chơi</h2>
+    <table class="test-table">
+      <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
+      <tr>
+        <td>R1</td>
+        <td>Lần đầu mở game hiện form đăng ký</td>
+        <td>Mở game trên trình duyệt chưa từng đăng ký (hoặc đã xoá localStorage).</td>
+        <td>Hiện form đăng ký trước khi thấy màn hình bắt đầu.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>R2</td>
+        <td>Đăng ký hợp lệ thành công</td>
+        <td>Nhập Họ tên, Email, Số điện thoại hợp lệ, bấm "Tiếp tục".</td>
+        <td>Lưu được vào database; chuyển sang màn hình bắt đầu bình thường.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>R3</td>
+        <td>Dữ liệu sai định dạng bị chặn</td>
+        <td>Bỏ trống một trường, hoặc nhập email/số điện thoại sai định dạng, bấm "Tiếp tục".</td>
+        <td>Báo lỗi ngay, không gửi lên server, không cho qua màn tiếp theo.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>R4</td>
+        <td>Email trùng bị từ chối</td>
+        <td>Đăng ký bằng email đã tồn tại trong database.</td>
+        <td>Server trả lỗi email đã tồn tại; không tạo bản ghi mới; form hiện thông báo rõ ràng.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>R5</td>
+        <td>Không hỏi lại ở các lượt chơi sau</td>
+        <td>Sau khi đăng ký thành công, tải lại trang hoặc chơi lại nhiều lượt.</td>
+        <td>Không hiện lại form đăng ký trên cùng trình duyệt.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>R6</td>
+        <td>Xoá dữ liệu trình duyệt thì đăng ký lại</td>
+        <td>Xoá localStorage rồi tải lại trang.</td>
+        <td>Hiện lại form đăng ký.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>R7</td>
+        <td>Lỗi mạng/server khi đăng ký</td>
+        <td>Ngắt kết nối tới server (hoặc dừng container) rồi thử đăng ký.</td>
+        <td>Báo lỗi rõ ràng, cho thử lại, không treo giao diện.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+    </table>
+
+    <h2>5.5. Trang quản trị</h2>
+    <table class="test-table">
+      <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
+      <tr>
+        <td>A1</td>
+        <td>Chặn truy cập khi chưa đăng nhập</td>
+        <td>Mở <code>/admin</code> khi chưa đăng nhập (hoặc sau khi phiên hết hạn).</td>
+        <td>Chỉ thấy form đăng nhập, không thấy dữ liệu người chơi nào.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>A2</td>
+        <td>Đăng nhập sai bị từ chối</td>
+        <td>Nhập sai tài khoản hoặc mật khẩu.</td>
+        <td>Báo lỗi, không vào được trang quản trị.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>A3</td>
+        <td>Đăng nhập đúng vào được danh sách</td>
+        <td>Nhập đúng tài khoản/mật khẩu cấu hình qua biến môi trường.</td>
+        <td>Vào trang danh sách, thấy đủ người chơi đã đăng ký.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>A4</td>
+        <td>Tìm kiếm đúng kết quả</td>
+        <td>Gõ một phần họ tên/email/số điện thoại vào ô tìm kiếm.</td>
+        <td>Danh sách chỉ còn các bản ghi khớp với từ khoá.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>A5</td>
+        <td>Xoá bản ghi hoạt động đúng</td>
+        <td>Bấm "Xoá" một người chơi, xác nhận xoá.</td>
+        <td>Bản ghi biến mất khỏi danh sách; tải lại trang/API cũng không còn thấy bản ghi đó.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>A6</td>
+        <td>Xuất CSV đúng dữ liệu</td>
+        <td>Bấm "Xuất CSV" khi đang xem toàn bộ và khi đang lọc theo tìm kiếm.</td>
+        <td>File CSV tải về có đúng cột (id, họ tên, email, số điện thoại, thời điểm đăng ký) và đúng số dòng khớp danh sách đang xem.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>A7</td>
+        <td>Phiên hết hạn phải đăng nhập lại</td>
+        <td>Chờ qua thời gian hết hạn phiên (hoặc xoá cookie phiên) rồi thao tác tiếp.</td>
+        <td>Bị đưa về form đăng nhập, không thao tác được cho đến khi đăng nhập lại.</td>
+        <td><span class="badge p2">P2</span></td>
+      </tr>
+    </table>
+
+    <h2>5.6. Ghi chú thực hiện test</h2>
     <ul>
       <li>Test ở ít nhất 2 trình duyệt khác nhau (ví dụ Chrome + Safari) và 1 thiết bị di động thật trước khi coi là hoàn thành.</li>
       <li>Các test có yếu tố thời gian (F9, T2, T3) nên lặp lại 2–3 lần để loại trừ sai số ngẫu nhiên.</li>

@@ -8,7 +8,33 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="game" id="game" data-state="idle">
+  <main class="game" id="game" data-state="registering">
+
+    <section class="screen screen-register" id="screenRegister">
+      <div class="panel">
+        <h1 class="title">Đăng ký để chơi</h1>
+        <p class="tagline">Chỉ cần nhập một lần trên trình duyệt này.</p>
+        <form id="registerForm" novalidate>
+          <label class="field">
+            <span class="field-label">Họ tên</span>
+            <input type="text" name="fullName" id="fullNameInput" autocomplete="name" required>
+            <span class="field-error" id="fullNameError"></span>
+          </label>
+          <label class="field">
+            <span class="field-label">Email</span>
+            <input type="email" name="email" id="emailInput" autocomplete="email" required>
+            <span class="field-error" id="emailError"></span>
+          </label>
+          <label class="field">
+            <span class="field-label">Số điện thoại</span>
+            <input type="tel" name="phone" id="phoneInput" autocomplete="tel" required>
+            <span class="field-error" id="phoneError"></span>
+          </label>
+          <p class="field-error" id="registerFormError" role="alert"></p>
+          <button class="btn btn-primary btn-lg" type="submit" id="btnRegister">Tiếp tục</button>
+        </form>
+      </div>
+    </section>
 
     <section class="screen screen-start" id="screenStart">
       <div class="panel">

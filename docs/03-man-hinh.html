@@ -83,6 +83,52 @@
       <li>Icon chuột và hang dùng SVG tự vẽ theo bộ màu <code>design/tokens.css</code>, không dùng ảnh/logo ngoài.</li>
     </ul>
 
+    <h2>3.5. Màn hình đăng ký (trước màn hình bắt đầu)</h2>
+    <div class="mockup">
+      <div class="screen">
+        <h4>Đăng ký để chơi</h4>
+        <p style="text-align:center; color:var(--color-text-muted); font-size:var(--font-size-sm); margin-bottom:var(--space-4);">Chỉ cần nhập một lần trên trình duyệt này.</p>
+        <div style="background:var(--color-bg); border:1px solid var(--color-border-strong); border-radius:var(--radius-md); padding:var(--space-3); margin-bottom:var(--space-3); color:var(--color-text-muted); font-size:var(--font-size-sm);">Họ tên</div>
+        <div style="background:var(--color-bg); border:1px solid var(--color-border-strong); border-radius:var(--radius-md); padding:var(--space-3); margin-bottom:var(--space-3); color:var(--color-text-muted); font-size:var(--font-size-sm);">Email</div>
+        <div style="background:var(--color-bg); border:1px solid var(--color-danger); border-radius:var(--radius-md); padding:var(--space-3); margin-bottom:var(--space-2); color:var(--color-text-muted); font-size:var(--font-size-sm);">Số điện thoại</div>
+        <p style="color:var(--color-danger); font-size:var(--font-size-xs); margin:0 0 var(--space-4);">Email này đã được đăng ký.</p>
+        <div class="btn">Tiếp tục</div>
+      </div>
+      <p class="caption">Màn hình đăng ký — hiện trước màn hình bắt đầu nếu trình duyệt chưa đăng ký; ví dụ báo lỗi khi email bị trùng</p>
+    </div>
+    <ul>
+      <li>Chỉ hiện khi trình duyệt <strong>chưa có dấu hiệu đăng ký</strong> trước đó (xem <a href="04-quy-tac-du-lieu.html">4.7</a>); nếu đã đăng ký rồi thì bỏ qua màn này, vào thẳng màn hình bắt đầu.</li>
+      <li>3 trường bắt buộc: Họ tên, Email, Số điện thoại; báo lỗi ngay dưới trường nhập sai khi bấm "Tiếp tục".</li>
+      <li>Nếu server báo email đã tồn tại, hiện thông báo lỗi tương ứng (như minh hoạ) và giữ nguyên dữ liệu đã nhập để người chơi sửa lại.</li>
+      <li>Đăng ký thành công → chuyển thẳng sang màn hình bắt đầu (mục 3.1), không cần thao tác gì thêm.</li>
+    </ul>
+
+    <h2>3.6. Trang quản trị (<code>/admin</code>)</h2>
+    <h3>3.6.1. Màn hình đăng nhập</h3>
+    <div class="mockup">
+      <div class="screen">
+        <h4>Đăng nhập quản trị</h4>
+        <div style="background:var(--color-bg); border:1px solid var(--color-border-strong); border-radius:var(--radius-md); padding:var(--space-3); margin-bottom:var(--space-3); color:var(--color-text-muted); font-size:var(--font-size-sm);">Tài khoản</div>
+        <div style="background:var(--color-bg); border:1px solid var(--color-border-strong); border-radius:var(--radius-md); padding:var(--space-3); margin-bottom:var(--space-4); color:var(--color-text-muted); font-size:var(--font-size-sm);">Mật khẩu</div>
+        <div class="btn">Đăng nhập</div>
+      </div>
+      <p class="caption">Hiện khi truy cập /admin mà chưa đăng nhập (hoặc phiên đã hết hạn)</p>
+    </div>
+
+    <h3>3.6.2. Danh sách người chơi</h3>
+    <p>Hiện sau khi đăng nhập thành công. Gồm:</p>
+    <ul>
+      <li>Ô tìm kiếm theo họ tên/email/số điện thoại, lọc danh sách ngay khi gõ hoặc khi bấm "Tìm".</li>
+      <li>Bảng danh sách người chơi, mỗi dòng gồm: Họ tên, Email, Số điện thoại, Thời điểm đăng ký, và nút "Xoá" ở cuối dòng.</li>
+      <li>Nút "Xuất CSV" ở đầu trang: tải về danh sách đang xem (toàn bộ hoặc theo kết quả tìm kiếm hiện tại).</li>
+      <li>Nút "Đăng xuất" để kết thúc phiên quản trị.</li>
+      <li>Bấm "Xoá" phải có bước xác nhận trước khi xoá thật (ví dụ hộp thoại "Bạn chắc chắn muốn xoá?"), vì xoá là vĩnh viễn.</li>
+    </ul>
+    <table class="decision-table">
+      <tr><th>Họ tên</th><th>Email</th><th>Số điện thoại</th><th>Đăng ký lúc</th><th></th></tr>
+      <tr><td>Nguyễn Văn A</td><td>a@example.com</td><td>0901234567</td><td>16/11/2026 10:02</td><td>Xoá</td></tr>
+    </table>
+
     <div class="pager">
       <a href="02-chuc-nang.html">← 2. Chức năng</a>
       <a href="04-quy-tac-du-lieu.html">Tiếp: 4. Quy tắc &amp; dữ liệu →</a>

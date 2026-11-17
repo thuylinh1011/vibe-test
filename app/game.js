@@ -8,7 +8,10 @@
   var GRID_SIZE = 9;
   var LOW_TIME_THRESHOLD_S = 5;
   var HIGH_SCORE_KEY = "dap-chuot:highScore";
+  var PLAYER_ID_KEY = "dap-chuot:playerId";
   var TICK_INTERVAL_MS = 100;
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var PHONE_RE = /^\+?[0-9]{9,11}$/;
 
   // ---- DOM ----
   var gameEl = document.getElementById("game");
@@ -21,9 +24,18 @@
   var endRecordEl = document.getElementById("endRecord");
   var btnStart = document.getElementById("btnStart");
   var btnRestart = document.getElementById("btnRestart");
+  var registerForm = document.getElementById("registerForm");
+  var fullNameInput = document.getElementById("fullNameInput");
+  var emailInput = document.getElementById("emailInput");
+  var phoneInput = document.getElementById("phoneInput");
+  var fullNameError = document.getElementById("fullNameError");
+  var emailError = document.getElementById("emailError");
+  var phoneError = document.getElementById("phoneError");
+  var registerFormError = document.getElementById("registerFormError");
+  var btnRegister = document.getElementById("btnRegister");
 
   // ---- Trạng thái trong bộ nhớ (theo §4.6) ----
-  var gameState = "idle"; // idle | playing | finished
+  var gameState = "registering"; // registering | idle | playing | finished
   var score = 0;
   var startTime = 0;
   var activeCellIndex = null;
@@ -250,9 +262,108 @@
     }
   });
 
+  // ---- Đăng ký người chơi (§2.7, §4.7) ----
+  function hasRegisteredPlayer() {
+    try {
+      return !!localStorage.getItem(PLAYER_ID_KEY);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function savePlayerId(id) {
+    try {
+      localStorage.setItem(PLAYER_ID_KEY, String(id));
+    } catch (e) {
+      // Storage bị chặn/lỗi: bỏ qua lặng lẽ, không chặn luồng chơi.
+    }
+  }
+
+  function goToIdle() {
+    gameState = "idle";
+    gameEl.dataset.state = "idle";
+  }
+
+  function setFieldError(el, message, inputEl) {
+    el.textContent = message || "";
+    if (inputEl) inputEl.classList.toggle("input-error", !!message);
+  }
+
+  function clearRegisterErrors() {
+    setFieldError(fullNameError, "", fullNameInput);
+    setFieldError(emailError, "", emailInput);
+    setFieldError(phoneError, "", phoneInput);
+    setFieldError(registerFormError, "");
+  }
+
+  function validateRegisterForm(fullName, email, phone) {
+    var errors = {};
+    if (fullName.length < 2) errors.fullName = "Họ tên phải có ít nhất 2 ký tự.";
+    if (!EMAIL_RE.test(email)) errors.email = "Email không đúng định dạng.";
+    if (!PHONE_RE.test(phone)) errors.phone = "Số điện thoại không hợp lệ (9–11 chữ số, có thể bắt đầu bằng +).";
+    return errors;
+  }
+
+  function submitRegister(e) {
+    e.preventDefault();
+    clearRegisterErrors();
+    var fullName = fullNameInput.value.trim();
+    var email = emailInput.value.trim();
+    var phone = phoneInput.value.trim();
+
+    var errors = validateRegisterForm(fullName, email, phone);
+    if (Object.keys(errors).length > 0) {
+      if (errors.fullName) setFieldError(fullNameError, errors.fullName, fullNameInput);
+      if (errors.email) setFieldError(emailError, errors.email, emailInput);
+      if (errors.phone) setFieldError(phoneError, errors.phone, phoneInput);
+      return;
+    }
+
+    btnRegister.disabled = true;
+    fetch("/api/players", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName: fullName, email: email, phone: phone }),
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { status: res.status, data: data };
+        });
+      })
+      .then(function (result) {
+        if (result.status === 201) {
+          savePlayerId(result.data.id);
+          goToIdle();
+          return;
+        }
+        if (result.status === 409) {
+          setFieldError(emailError, result.data.message || "Email này đã được đăng ký.", emailInput);
+          return;
+        }
+        if (result.status === 400 && result.data.fields) {
+          if (result.data.fields.fullName) setFieldError(fullNameError, result.data.fields.fullName, fullNameInput);
+          if (result.data.fields.email) setFieldError(emailError, result.data.fields.email, emailInput);
+          if (result.data.fields.phone) setFieldError(phoneError, result.data.fields.phone, phoneInput);
+          return;
+        }
+        setFieldError(registerFormError, result.data.message || "Có lỗi xảy ra, thử lại sau.");
+      })
+      .catch(function () {
+        setFieldError(registerFormError, "Không kết nối được tới server, thử lại sau.");
+      })
+      .finally(function () {
+        btnRegister.disabled = false;
+      });
+  }
+
   // ---- Khởi tạo ----
   buildGrid();
   renderHighScoreOnStart();
   btnStart.addEventListener("click", startRound);
   btnRestart.addEventListener("click", startRound);
+  registerForm.addEventListener("submit", submitRegister);
+
+  if (hasRegisteredPlayer()) {
+    goToIdle();
+  }
 })();
