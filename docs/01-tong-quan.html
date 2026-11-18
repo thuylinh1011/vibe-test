@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1. Tổng quan — Đập Chuột</title>
+<title>1. Tổng quan — Chém Hoa Quả</title>
 <link rel="stylesheet" href="../design/tokens.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="layout">
   <nav class="side">
-    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="brand" href="index.html">🍉 Chém Hoa Quả</a>
     <a class="item active" href="01-tong-quan.html">1. Tổng quan</a>
     <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
     <a class="item" href="03-man-hinh.html">3. Màn hình</a>
@@ -22,7 +22,7 @@
     <h1>Tổng quan</h1>
 
     <div class="card">
-      <p><strong>Đập Chuột</strong> là mini game chạy trên trình duyệt: người chơi bấm vào con chuột xuất hiện ngẫu nhiên trên lưới 3×3 để ghi điểm trong 30 giây mỗi lượt. Không cần máy chủ, không cần đăng nhập — mở trang là chơi được ngay, trên máy tính hoặc điện thoại.</p>
+      <p><strong>Chém Hoa Quả</strong> là mini game chạy trên trình duyệt, bối cảnh một sạp chợ hoa quả: hoa quả lần lượt nhô lên từ 9 sọt trên sạp, người chơi bấm/chạm vào quả để chém đôi nó và ghi điểm trong 30 giây mỗi lượt. Người chơi đăng ký một lần trên trình duyệt trước khi chơi; mở trang là chơi được ngay, trên máy tính hoặc điện thoại.</p>
     </div>
 
     <h2>Phạm vi</h2>
@@ -30,16 +30,18 @@
     <div>
       <span class="tag in">Chạy trên trình duyệt hiện đại (Chrome, Safari, Firefox, Edge)</span>
       <span class="tag in">Máy tính &amp; điện thoại</span>
-      <span class="tag in">Không cần máy chủ / đăng nhập</span>
+      <span class="tag in">Đăng ký một lần trên trình duyệt trước khi chơi</span>
       <span class="tag in">Một người chơi, một thiết bị</span>
       <span class="tag in">Lưu điểm cao nhất trên trình duyệt (localStorage)</span>
+      <span class="tag in">Dữ liệu đăng ký lưu database, có trang quản trị /admin</span>
     </div>
     <p>Ngoài phạm vi (chưa làm ở phiên bản này):</p>
     <div>
       <span class="tag out">Nhiều cấp độ khó</span>
       <span class="tag out">Bảng xếp hạng online</span>
       <span class="tag out">Âm thanh / nhạc nền</span>
-      <span class="tag out">Nhiều loại chuột khác nhau</span>
+      <span class="tag out">Bom / vật cản trừ điểm</span>
+      <span class="tag out">Combo chém nhiều quả một lần (combo chỉ để vui, không cộng điểm)</span>
       <span class="tag out">Đa ngôn ngữ (chỉ tiếng Việt)</span>
     </div>
 
@@ -48,8 +50,8 @@
     <table class="decision-table">
       <tr><th>Chủ đề</th><th>Quyết định</th></tr>
       <tr>
-        <td>Hình ảnh chuột &amp; hang</td>
-        <td>Vẽ icon SVG tự thiết kế, dùng đúng bộ màu trong <code>design/tokens.css</code> (đen/trắng + xanh dương nhấn), không dùng ảnh/logo bên ngoài.</td>
+        <td>Hình ảnh hoa quả &amp; sạp chợ</td>
+        <td>Vẽ bằng SVG/CSS tự thiết kế theo bộ màu trong <code>design/tokens.css</code> (nền kem ấm, nhấn cam-đỏ), không dùng ảnh/thư viện tải từ ngoài — vẫn chạy được khi mở file trực tiếp.</td>
       </tr>
       <tr>
         <td>Ngôn ngữ</td>
@@ -61,11 +63,19 @@
       </tr>
       <tr>
         <td>Hỗ trợ bàn phím</td>
-        <td>Có — hỗ trợ <code>Tab</code> để di chuyển focus qua các ô và <code>Enter</code>/<code>Space</code> để "đập" ô đang focus, bên cạnh click/chạm.</td>
+        <td>Có — hỗ trợ <code>Tab</code> để di chuyển focus qua các sọt và <code>Enter</code>/<code>Space</code> để "chém" sọt đang focus, bên cạnh click/chạm.</td>
+      </tr>
+      <tr>
+        <td>Giảm chuyển động</td>
+        <td>Khi hệ điều hành bật "giảm chuyển động" (<code>prefers-reduced-motion</code>), các hiệu ứng chém (bay, nảy, mờ dần) được rút gọn/giảm bớt chuyển động.</td>
       </tr>
       <tr>
         <td>Cấu trúc file khi code</td>
-        <td>Một file HTML duy nhất (nhúng CSS + JS), mở trực tiếp bằng trình duyệt là chạy, không cần build hay máy chủ.</td>
+        <td>Tách 3 file trong <code>app/</code>: <code>index.html</code>, <code>style.css</code>, <code>game.js</code>; không dùng ảnh/thư viện ngoài.</td>
+      </tr>
+      <tr>
+        <td>Đăng ký người chơi &amp; trang quản trị</td>
+        <td>Giữ nguyên như phiên bản trước (họ tên/email/số điện thoại, kiểm tra trùng email; trang <code>/admin</code> đăng nhập để xem/tìm/xoá/xuất CSV) — chỉ đổi giao diện cho hợp chủ đề chợ hoa quả, xem mục <a href="02-chuc-nang.html">2.7–2.8</a>.</td>
       </tr>
     </table>
 

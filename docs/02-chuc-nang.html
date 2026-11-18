@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2. Chức năng — Đập Chuột</title>
+<title>2. Chức năng — Chém Hoa Quả</title>
 <link rel="stylesheet" href="../design/tokens.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="layout">
   <nav class="side">
-    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="brand" href="index.html">🍉 Chém Hoa Quả</a>
     <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
     <a class="item active" href="02-chuc-nang.html">2. Chức năng</a>
     <a class="item" href="03-man-hinh.html">3. Màn hình</a>
@@ -23,35 +23,51 @@
 
     <h2>2.1. Luật chơi</h2>
     <ol>
-      <li>Bảng chơi là lưới <strong>3×3 = 9 ô</strong> (9 cái hang).</li>
+      <li>Bảng chơi là sạp hoa quả <strong>3×3 = 9 sọt</strong>.</li>
       <li>Mỗi lượt chơi kéo dài <strong>30 giây</strong>, bắt đầu đếm ngược khi người chơi bấm <strong>"Bắt đầu"</strong>.</li>
-      <li>Tại mỗi thời điểm có <strong>tối đa 1 con chuột</strong> trên lưới.</li>
-      <li>Chuột trồi lên ở một ô ngẫu nhiên và ở lại trong khoảng <strong>0,8 giây</strong>, sau đó tự lặn xuống.</li>
-      <li>Ô xuất hiện tiếp theo <strong>không trùng</strong> với ô vừa xuất hiện ngay trước đó.</li>
-      <li>Khi chuột bị đập trúng hoặc tự lặn xuống, sau khoảng <strong>0,3 giây</strong> con chuột tiếp theo sẽ xuất hiện.</li>
-      <li>Người chơi bấm (click chuột trên máy tính, chạm trên điện thoại, hoặc <code>Enter</code>/<code>Space</code> khi ô đang được focus bằng bàn phím) vào ô có chuột để đập.</li>
-      <li>Khi hết 30 giây: chuột biến mất, lưới không nhận thao tác nữa, chuyển sang màn hình kết thúc.</li>
+      <li>Tại mỗi thời điểm có <strong>tối đa 1 quả</strong> trên sạp.</li>
+      <li>Quả nhô lên ở một sọt ngẫu nhiên và ở lại một lúc rồi tự lăn xuống sọt. Thời gian ở lại <strong>chậm lúc đầu và nhanh dần</strong> theo 6 chặng 5 giây (bảng ở mục 2.1.1).</li>
+      <li>Sọt xuất hiện tiếp theo <strong>không trùng</strong> với sọt vừa xuất hiện ngay trước đó.</li>
+      <li>Mỗi lần xuất hiện, quả được chọn <strong>ngẫu nhiên</strong> trong 6 loại: dưa hấu, cam, táo, chuối, dứa, xoài (xem <a href="04-quy-tac-du-lieu.html">4.9</a>).</li>
+      <li>Khi quả bị chém hoặc tự lăn xuống, sau một khoảng nghỉ ngắn (giảm dần theo chặng, mục 2.1.1) quả tiếp theo sẽ xuất hiện.</li>
+      <li>Người chơi bấm (click chuột trên máy tính, chạm trên điện thoại, hoặc <code>Enter</code>/<code>Space</code> khi sọt đang được focus bằng bàn phím) vào sọt có quả để chém.</li>
+      <li>Khi hết 30 giây: quả biến mất, sạp không nhận thao tác nữa, chuyển sang màn hình kết thúc.</li>
     </ol>
+
+    <h3>2.1.1. Tốc độ nhanh dần theo chặng</h3>
+    <p>Lượt chơi 30 giây chia làm 6 chặng, mỗi chặng 5 giây; càng về sau quả ở lại càng ngắn và nghỉ giữa 2 quả càng ngắn — chi tiết hằng số ở <a href="04-quy-tac-du-lieu.html">4.9</a>:</p>
+    <table class="decision-table">
+      <tr><th>Chặng</th><th>Thời gian đã chơi</th><th>Quả ở lại</th><th>Nghỉ trước quả kế tiếp</th></tr>
+      <tr><td>1</td><td>0–5 giây</td><td>1,6 giây</td><td>0,6 giây</td></tr>
+      <tr><td>2</td><td>5–10 giây</td><td>1,45 giây</td><td>0,55 giây</td></tr>
+      <tr><td>3</td><td>10–15 giây</td><td>1,3 giây</td><td>0,5 giây</td></tr>
+      <tr><td>4</td><td>15–20 giây</td><td>1,15 giây</td><td>0,45 giây</td></tr>
+      <tr><td>5</td><td>20–25 giây</td><td>1,0 giây</td><td>0,4 giây</td></tr>
+      <tr><td>6</td><td>25–30 giây</td><td>0,9 giây</td><td>0,35 giây</td></tr>
+    </table>
+    <p>Khi sang chặng mới (trừ chặng 1), hiện câu ngắn ở giữa sạp: "Chợ đông rồi, tăng tốc!".</p>
 
     <h2>2.2. Cách điều khiển</h2>
     <table class="decision-table">
       <tr><th>Thiết bị</th><th>Cách thao tác</th></tr>
-      <tr><td>Máy tính — chuột</td><td>Click vào ô đang có chuột.</td></tr>
-      <tr><td>Điện thoại / máy tính bảng</td><td>Chạm (tap) vào ô đang có chuột.</td></tr>
-      <tr><td>Bàn phím</td><td><code>Tab</code> / <code>Shift+Tab</code> để di chuyển focus qua lại giữa 9 ô theo thứ tự trên lưới; <code>Enter</code> hoặc <code>Space</code> để "đập" ô đang focus. Focus hiện rõ viền để biết đang ở ô nào.</td></tr>
+      <tr><td>Máy tính — chuột</td><td>Click vào sọt đang có quả.</td></tr>
+      <tr><td>Điện thoại / máy tính bảng</td><td>Chạm (tap) vào sọt đang có quả. Không bắt buộc vuốt dao.</td></tr>
+      <tr><td>Bàn phím</td><td><code>Tab</code> / <code>Shift+Tab</code> để di chuyển focus qua lại giữa 9 sọt theo thứ tự trên sạp; <code>Enter</code> hoặc <code>Space</code> để "chém" sọt đang focus. Focus hiện rõ viền để biết đang ở sọt nào.</td></tr>
     </table>
-    <p>Cả ba cách điều khiển dùng chung một hành động lõi: "đập ô X" — không phân biệt kết quả tính điểm theo thiết bị.</p>
+    <p>Cả ba cách điều khiển dùng chung một hành động lõi: "chém sọt X" — không phân biệt kết quả tính điểm theo thiết bị. Bấm nhanh liên tục trên sạp không được phóng to trang hay chọn chữ (xem <a href="04-quy-tac-du-lieu.html">4.9</a>).</p>
 
     <h2>2.3. Cách tính điểm</h2>
     <table class="decision-table">
       <tr><th>Hành động</th><th>Điểm</th></tr>
-      <tr><td>Bấm/chạm/nhấn phím trúng ô đang có chuột</td><td><strong>+1</strong></td></tr>
-      <tr><td>Bấm vào ô trống</td><td>0 (không trừ điểm)</td></tr>
-      <tr><td>Để chuột tự lặn xuống (không bấm kịp)</td><td>0 (không trừ điểm)</td></tr>
+      <tr><td>Chém trúng sọt đang có quả</td><td><strong>+1</strong></td></tr>
+      <tr><td>Bấm vào sọt trống</td><td>0 (không trừ điểm)</td></tr>
+      <tr><td>Để quả tự lăn xuống (không chém kịp)</td><td>0 (không trừ điểm)</td></tr>
     </table>
     <ul>
-      <li>Mỗi con chuột chỉ tính điểm <strong>một lần</strong>: bấm nhiều lần vào cùng một con chỉ được 1 điểm. Chuột bị đập trúng biến mất ngay.</li>
+      <li>Mỗi quả chỉ tính điểm <strong>một lần</strong>: bấm nhiều lần vào cùng một quả chỉ được 1 điểm. Quả bị chém trúng tách đôi và biến mất ngay.</li>
+      <li>Mọi loại quả đều +1 điểm như nhau — chưa phân biệt điểm theo loại quả.</li>
       <li>Điểm bắt đầu từ <strong>0</strong> ở mỗi lượt mới.</li>
+      <li>Combo chém liên tiếp (mục 2.9) chỉ để vui, <strong>không cộng thêm điểm</strong>.</li>
     </ul>
 
     <h2>2.4. Điểm cao nhất</h2>
@@ -66,18 +82,28 @@
     <ul>
       <li>Thời gian còn lại được tính lại dựa trên <strong>mốc thời gian thực</strong> (timestamp lúc bắt đầu lượt), không dựa vào số lần "tick" đã chạy.</li>
       <li>Nếu thời gian thực đã trôi qua vượt 30 giây trong lúc tab bị ẩn, lượt chơi được coi là đã kết thúc ngay khi quay lại — chuyển thẳng sang màn hình kết thúc với điểm đã có.</li>
-      <li>Không tạm dừng đếm giờ hay việc chuột xuất hiện/lặn khi tab bị ẩn — xem chi tiết công thức ở mục <a href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>.</li>
+      <li>Không tạm dừng đếm giờ hay việc quả xuất hiện/lăn xuống khi tab bị ẩn — xem chi tiết công thức ở mục <a href="04-quy-tac-du-lieu.html">4. Quy tắc &amp; dữ liệu</a>.</li>
     </ul>
 
     <h2>2.6. Vòng đời một lượt chơi</h2>
     <ol>
-      <li><strong>Chờ bắt đầu</strong> — màn hình bắt đầu, chưa tính giờ, chưa có chuột.</li>
-      <li><strong>Đang chơi</strong> — từ lúc bấm "Bắt đầu" đến khi hết 30 giây; điểm và thời gian cập nhật liên tục; chuột xuất hiện/lặn theo luật ở mục 2.1.</li>
-      <li><strong>Kết thúc</strong> — hiện màn hình kết thúc với điểm lượt này, điểm cao nhất; lưới không còn nhận thao tác.</li>
-      <li><strong>Chơi lại</strong> — bấm nút "Chơi lại" ở màn hình kết thúc để quay lại bước 2 với điểm = 0, thời gian = 30s (không tạo ra hai đồng hồ chạy song song).</li>
+      <li><strong>Chờ bắt đầu</strong> — màn hình bắt đầu, chưa tính giờ, chưa có quả.</li>
+      <li><strong>Đang chơi</strong> — từ lúc bấm "Bắt đầu" đến khi hết 30 giây; điểm và thời gian cập nhật liên tục; quả xuất hiện/lăn xuống theo luật ở mục 2.1.</li>
+      <li><strong>Kết thúc</strong> — hiện màn hình kết thúc với điểm lượt này, danh hiệu, điểm cao nhất; sạp không còn nhận thao tác.</li>
+      <li><strong>Chơi lại</strong> — bấm nút "Chơi lại" ở màn hình kết thúc để quay lại bước 2 với điểm = 0, thời gian = 30s, combo = 0 (không tạo ra hai đồng hồ chạy song song).</li>
     </ol>
 
-    <h2>2.7. Đăng ký người chơi (trước khi chơi)</h2>
+    <h2>2.9. Hiệu ứng chém &amp; lời thoại vui</h2>
+    <ul>
+      <li><strong>Hiệu ứng khi chém trúng:</strong> quả tách thành hai nửa theo vệt dao chéo, lộ ruột theo màu riêng của loại quả; hai nửa bay tách ra hai phía rồi rơi xuống, mờ dần trong khoảng 0,5 giây; có giọt nước quả bắn ra cùng màu ruột; hiện "+1" bay lên tại chỗ; ô điểm trên HUD nảy nhẹ. Mỗi lần chém có một vệt lưỡi dao chéo, mờ dần sau khoảng 0,2 giây.</li>
+      <li>Hiệu ứng không chặn quả tiếp theo xuất hiện và không làm sai thời gian lượt chơi; khi hệ điều hành bật "giảm chuyển động", hiệu ứng được rút gọn (xem <a href="04-quy-tac-du-lieu.html">4.9</a>).</li>
+      <li><strong>Lời thoại khi chém trúng:</strong> hiện bong bóng chữ cạnh quả (~0,8 giây) cùng "+1", chọn ngẫu nhiên giữa câu chung và câu riêng theo loại quả, không lặp lại câu vừa hiện ngay trước đó.</li>
+      <li><strong>Combo:</strong> chém trúng liên tiếp không để quả nào rơi — đạt 3/5/10 liên tiếp thì hiện câu combo to ở giữa sạp. Để quả rơi thì combo về 0. Combo chỉ để vui, không cộng điểm.</li>
+      <li><strong>Khi để quả rơi:</strong> hiện câu trêu nhẹ, không chê bai.</li>
+      <li><strong>Màn hình bắt đầu/kết thúc:</strong> câu chào ngẫu nhiên lúc bắt đầu; còn 5 giây cuối hiện câu nhắc; màn kết thúc hiện danh hiệu + câu nhận xét theo điểm, và câu riêng khi phá kỷ lục. Chi tiết toàn bộ danh sách câu ở <a href="04-quy-tac-du-lieu.html">4.10</a>.</li>
+    </ul>
+
+    <h2>2.10. Đăng ký người chơi (trước khi chơi)</h2>
     <ul>
       <li>Trước khi vào được màn hình bắt đầu, hệ thống kiểm tra trình duyệt đã đăng ký chưa (dựa trên dữ liệu lưu cục bộ ở mục <a href="04-quy-tac-du-lieu.html">4.7</a>).</li>
       <li>Nếu <strong>chưa đăng ký</strong>: hiện form yêu cầu nhập <strong>Họ tên</strong>, <strong>Email</strong>, <strong>Số điện thoại</strong> trước khi vào màn hình bắt đầu/chơi.</li>
@@ -90,7 +116,7 @@
       <li>Việc đăng ký không ảnh hưởng đến luật chơi, cách tính điểm hay điểm cao nhất đã mô tả ở các mục 2.1–2.6.</li>
     </ul>
 
-    <h2>2.8. Trang quản trị (Admin)</h2>
+    <h2>2.11. Trang quản trị (Admin)</h2>
     <ul>
       <li>Có một trang quản trị riêng ở địa chỉ <code>/admin</code>, không có liên kết công khai từ giao diện người chơi.</li>
       <li>Phải <strong>đăng nhập</strong> (1 tài khoản cố định, cấu hình qua biến môi trường — xem <a href="04-quy-tac-du-lieu.html">4.8</a>) mới xem được nội dung bên trong; chưa đăng nhập thì chỉ thấy form đăng nhập.</li>

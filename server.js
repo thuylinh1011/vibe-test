@@ -280,7 +280,7 @@ const server = http.createServer(async (req, res) => {
 db.initSchema()
   .then(() => {
     server.listen(PORT, () => {
-      console.log("Đập Chuột đang chạy tại http://localhost:" + PORT);
+      console.log("Chém Hoa Quả đang chạy tại http://localhost:" + PORT);
     });
   })
   .catch((err) => {

@@ -1,25 +1,75 @@
 (function () {
   "use strict";
 
-  // ---- Hằng số (theo docs/04-quy-tac-du-lieu.html §4.1) ----
+  // ---- Hằng số (theo docs/04-quy-tac-du-lieu.html §4.1, §4.9) ----
   var ROUND_DURATION_MS = 30000;
-  var MOUSE_VISIBLE_MS = 800;
-  var GAP_AFTER_MOUSE_MS = 300;
+  var STAGE_DURATION_MS = 5000;
+  // Tốc độ nhanh dần theo 6 chặng 5 giây (YEU-CAU-UPDATE-2.md §2.1) — đặt chung một
+  // chỗ để dễ chỉnh sau khi chơi thử.
+  var STAGES = [
+    { visibleMs: 1600, gapMs: 600 },
+    { visibleMs: 1450, gapMs: 550 },
+    { visibleMs: 1300, gapMs: 500 },
+    { visibleMs: 1150, gapMs: 450 },
+    { visibleMs: 1000, gapMs: 400 },
+    { visibleMs: 900, gapMs: 350 },
+  ];
+  var STAGE_UP_LINE = "Chợ đông rồi, tăng tốc!";
   var GRID_SIZE = 9;
   var LOW_TIME_THRESHOLD_S = 5;
-  var HIGH_SCORE_KEY = "dap-chuot:highScore";
+  var HIGH_SCORE_KEY = "dap-chuot:highScore"; // cố tình giữ tiền tố cũ, xem §4.5
   var PLAYER_ID_KEY = "dap-chuot:playerId";
   var TICK_INTERVAL_MS = 100;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var PHONE_RE = /^\+?[0-9]{9,11}$/;
+  var HALF_FLY_MS = 500;
+  var HIT_BUBBLE_MS = 800;
+
+  // ---- Dữ liệu loại quả (§4.9) ----
+  var FRUITS = [
+    { id: "watermelon", name: "Dưa hấu", hitLine: "Đỏ au như má em lúc ngại!", seeds: true },
+    { id: "orange", name: "Cam", hitLine: "Cam ơi, cam chịu đi!", segments: true },
+    { id: "apple", name: "Táo", hitLine: "Táo bạo đấy!" },
+    { id: "banana", name: "Chuối", hitLine: "Chuối này giờ là của bạn!" },
+    { id: "pineapple", name: "Dứa", hitLine: "Dứa nhiều mắt mà vẫn không thoát!" },
+    { id: "mango", name: "Xoài", hitLine: "Xoài cát Hòa Lộc, chém là phải sang!" },
+  ];
+
+  // ---- Lời thoại (§4.10) — đặt chung một chỗ để dễ sửa/thêm ----
+  var HIT_LINES = [
+    "Đẳng cấp! Tuyệt vời! Tinh hoa hội tụ!",
+    "Dao nhanh hơn người yêu cũ trở mặt!",
+    "Chém một phát, ngọt như đường phèn!",
+    "Đỉnh của chóp!",
+    "Thợ chém hoa quả số 1 chợ Bến Thành!",
+    "Ơ kìa, ai cho chém đẹp vậy?",
+  ];
+  var DROP_LINES = ["Ối, quả chạy mất rồi!", "Chậm một nhịp thôi, không sao!", "Quả này hôm nay may mắn ghê."];
+  var GREETING_LINES = ["Chợ mở cửa rồi, mài dao đi nào!", "Hôm nay hoa quả tươi lắm, chém thả ga!"];
+  var LOW_TIME_LINE = "Sắp đóng cửa chợ, nhanh tay lên!";
+  var COMBO_LINES = { 3: "Combo x3! Tay này là tay vàng!", 5: "Combo x5! Cả chợ đứng hình!", 10: "Combo x10! Huyền thoại sạp hoa quả!" };
+  var RECORD_LINE = "🏆 Kỷ lục mới! Cả chợ vỗ tay!";
+  var TITLES = [
+    { min: 0, max: 5, title: "Khách đi chợ dạo", comment: "Mới cầm dao lần đầu à? Thử lại nào!" },
+    { min: 6, max: 12, title: "Phụ bán sạp", comment: "Có tiềm năng đấy, chủ sạp để ý rồi!" },
+    { min: 13, max: 20, title: "Chủ sạp lành nghề", comment: "Tay dao chắc nịch, cả dãy hàng nể!" },
+    { min: 21, max: 27, title: "Bậc thầy dao kéo", comment: "Đẳng cấp, tuyệt vời, tinh hoa!" },
+    { min: 28, max: Infinity, title: "Huyền thoại chợ hoa quả", comment: "Truyền nhân đời thứ 9 của dao phay!" },
+  ];
 
   // ---- DOM ----
   var gameEl = document.getElementById("game");
   var gridEl = document.getElementById("grid");
   var scoreValueEl = document.getElementById("scoreValue");
+  var scoreStrongEl = scoreValueEl; // <strong id="scoreValue">, dùng để nảy HUD
   var timeValueEl = document.getElementById("timeValue");
   var startHighScoreEl = document.getElementById("startHighScore");
+  var startGreetingEl = document.getElementById("startGreeting");
+  var lowTimeLineEl = document.getElementById("lowTimeLine");
+  var comboBannerEl = document.getElementById("comboBanner");
   var endScoreEl = document.getElementById("endScore");
+  var endTitleEl = document.getElementById("endTitle");
+  var endCommentEl = document.getElementById("endComment");
   var endHighScoreEl = document.getElementById("endHighScore");
   var endRecordEl = document.getElementById("endRecord");
   var btnStart = document.getElementById("btnStart");
@@ -40,10 +90,18 @@
   var startTime = 0;
   var activeCellIndex = null;
   var lastCellIndex = null;
+  var currentFruit = null;
   var currentMouseId = null;
   var caughtMouseIds = new Set();
   var mouseIdCounter = 0;
+  var comboCount = 0;
+  var lowTimeAnnounced = false;
+  var lastStageIndex = 0;
   var highScore = loadHighScore();
+
+  var lastHitLine = null;
+  var lastDropLine = null;
+  var lastGreetingLine = null;
 
   var mouseTimer = null;
   var gapTimer = null;
@@ -53,18 +111,8 @@
 
   function cellTemplate(index) {
     return (
-      '<button class="cell" type="button" data-index="' + index + '" aria-label="Ô ' + (index + 1) + '">' +
-      '<svg class="cell-hole" viewBox="0 0 100 50" aria-hidden="true" focusable="false">' +
-      '<ellipse cx="50" cy="25" rx="48" ry="22"></ellipse>' +
-      "</svg>" +
-      '<svg class="cell-mouse" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
-      '<circle class="mouse-ear" cx="16" cy="16" r="9"></circle>' +
-      '<circle class="mouse-ear" cx="48" cy="16" r="9"></circle>' +
-      '<circle class="mouse-body" cx="32" cy="36" r="22"></circle>' +
-      '<circle class="mouse-eye" cx="24" cy="32" r="3"></circle>' +
-      '<circle class="mouse-eye" cx="40" cy="32" r="3"></circle>' +
-      '<circle class="mouse-nose" cx="32" cy="42" r="3.5"></circle>' +
-      "</svg>" +
+      '<button class="cell" type="button" data-index="' + index + '" aria-label="Sọt ' + (index + 1) + '">' +
+      '<div class="fruit-slot"></div>' +
       "</button>"
     );
   }
@@ -107,13 +155,73 @@
     return false;
   }
 
-  // ---- Quy tắc chọn ô (§4.3) ----
+  // ---- Chọn ngẫu nhiên không lặp lại giá trị vừa chọn (§4.3, §4.10) ----
   function pickCellIndex(exclude) {
     var idx;
     do {
       idx = Math.floor(Math.random() * GRID_SIZE);
     } while (exclude !== null && idx === exclude);
     return idx;
+  }
+
+  function pickFruit() {
+    return FRUITS[Math.floor(Math.random() * FRUITS.length)];
+  }
+
+  // ---- Tốc độ nhanh dần theo chặng (§2.1 YEU-CAU-UPDATE-2.md) ----
+  function getStageIndex() {
+    var elapsedMs = Date.now() - startTime;
+    var idx = Math.floor(elapsedMs / STAGE_DURATION_MS);
+    if (idx < 0) idx = 0;
+    if (idx > STAGES.length - 1) idx = STAGES.length - 1;
+    return idx;
+  }
+
+  function getStageParams() {
+    return STAGES[getStageIndex()];
+  }
+
+  function checkStageTransition() {
+    var idx = getStageIndex();
+    if (idx !== lastStageIndex) {
+      lastStageIndex = idx;
+      if (idx > 0) showBanner(STAGE_UP_LINE);
+    }
+  }
+
+  function pickRandomExcept(list, exclude) {
+    if (list.length <= 1) return list[0];
+    var choice;
+    do {
+      choice = list[Math.floor(Math.random() * list.length)];
+    } while (choice === exclude);
+    return choice;
+  }
+
+  function getHitLine(fruit) {
+    var useSpecific = fruit.hitLine && Math.random() < 0.35;
+    var line = useSpecific ? fruit.hitLine : pickRandomExcept(HIT_LINES, lastHitLine);
+    lastHitLine = line;
+    return line;
+  }
+
+  function getDropLine() {
+    var line = pickRandomExcept(DROP_LINES, lastDropLine);
+    lastDropLine = line;
+    return line;
+  }
+
+  function getTitleFor(finalScore) {
+    for (var i = 0; i < TITLES.length; i++) {
+      if (finalScore >= TITLES[i].min && finalScore <= TITLES[i].max) return TITLES[i];
+    }
+    return TITLES[TITLES.length - 1];
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
 
   // ---- Render ----
@@ -123,78 +231,175 @@
 
   function renderScore() {
     scoreValueEl.textContent = String(score);
+    scoreStrongEl.classList.remove("bump");
+    // Buộc reflow để animation chạy lại mỗi lần cộng điểm.
+    void scoreStrongEl.offsetWidth;
+    scoreStrongEl.classList.add("bump");
   }
 
   function renderTime(remainingS) {
     timeValueEl.textContent = remainingS + "s";
     timeValueEl.classList.toggle("low-time", remainingS <= LOW_TIME_THRESHOLD_S);
-  }
-
-  function renderMouseAt(index, hasMouse) {
-    var cell = cells[index];
-    if (!cell) return;
-    cell.classList.toggle("has-mouse", hasMouse);
-  }
-
-  function renderCaughtEffect(index) {
-    var cell = cells[index];
-    if (!cell) return;
-    cell.classList.remove("has-mouse");
-    cell.classList.add("caught");
-    setTimeout(function () {
-      cell.classList.remove("caught");
-    }, 200);
-  }
-
-  function clearAllMiceVisuals() {
-    for (var i = 0; i < cells.length; i++) {
-      cells[i].classList.remove("has-mouse", "caught");
+    if (remainingS <= LOW_TIME_THRESHOLD_S && !lowTimeAnnounced) {
+      lowTimeAnnounced = true;
+      lowTimeLineEl.textContent = LOW_TIME_LINE;
+      lowTimeLineEl.hidden = false;
     }
   }
 
-  // ---- Chuột xuất hiện / lặn (§2.1, §4.3) ----
-  function spawnMouse() {
+  function fruitWholeMarkup(fruit) {
+    return (
+      '<div class="fruit-whole" data-fruit="' + fruit.id + '">' +
+      '<div class="fruit-body">' +
+      '<span class="fruit-eye eye-l"></span><span class="fruit-eye eye-r"></span>' +
+      '<span class="fruit-mouth"></span>' +
+      '<span class="fruit-blush blush-l"></span><span class="fruit-blush blush-r"></span>' +
+      '<span class="fruit-shine"></span>' +
+      "</div></div>"
+    );
+  }
+
+  function fruitDetailMarkup(fruit) {
+    if (fruit.seeds) {
+      return (
+        '<span class="seed" style="top:35%;left:40%;"></span>' +
+        '<span class="seed" style="top:55%;left:60%;"></span>' +
+        '<span class="seed" style="top:65%;left:35%;"></span>'
+      );
+    }
+    if (fruit.segments) {
+      return (
+        '<span class="segment-line" style="transform:rotate(0deg);"></span>' +
+        '<span class="segment-line" style="transform:rotate(60deg);"></span>' +
+        '<span class="segment-line" style="transform:rotate(120deg);"></span>'
+      );
+    }
+    return "";
+  }
+
+  function slicedMarkup(fruit, hitText) {
+    return (
+      '<div class="slice-wrap" data-fruit="' + fruit.id + '">' +
+      '<div class="fruit-half half-a">' + fruitDetailMarkup(fruit) + "</div>" +
+      '<div class="fruit-half half-b">' + fruitDetailMarkup(fruit) + "</div>" +
+      '<div class="blade"></div>' +
+      '<div class="juice j1"></div><div class="juice j2"></div><div class="juice j3"></div><div class="juice j4"></div>' +
+      '<div class="plus-one">+1</div>' +
+      (hitText ? '<div class="hit-bubble">' + escapeHtml(hitText) + "</div>" : "") +
+      "</div>"
+    );
+  }
+
+  function renderFruitAt(index, fruit) {
+    var cell = cells[index];
+    if (!cell) return;
+    var slot = cell.querySelector(".fruit-slot");
+    if (fruit) {
+      slot.innerHTML = fruitWholeMarkup(fruit);
+      cell.classList.add("has-fruit");
+    } else {
+      cell.classList.remove("has-fruit");
+      slot.innerHTML = "";
+    }
+  }
+
+  function renderHitEffect(index, fruit) {
+    var cell = cells[index];
+    if (!cell) return;
+    cell.classList.remove("has-fruit");
+    var slot = cell.querySelector(".fruit-slot");
+    slot.innerHTML = slicedMarkup(fruit, getHitLine(fruit));
+    setTimeout(function () {
+      if (slot) slot.innerHTML = "";
+    }, Math.max(HALF_FLY_MS, HIT_BUBBLE_MS) + 50);
+  }
+
+  function renderDropEffect(index) {
+    var cell = cells[index];
+    if (!cell) return;
+    var slot = cell.querySelector(".fruit-slot");
+    var bubble = document.createElement("div");
+    bubble.className = "drop-bubble";
+    bubble.textContent = getDropLine();
+    slot.appendChild(bubble);
+    setTimeout(function () {
+      if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+    }, HIT_BUBBLE_MS + 50);
+  }
+
+  function clearAllFruitVisuals() {
+    for (var i = 0; i < cells.length; i++) {
+      cells[i].classList.remove("has-fruit");
+      var slot = cells[i].querySelector(".fruit-slot");
+      if (slot) slot.innerHTML = "";
+    }
+  }
+
+  function showBanner(text) {
+    comboBannerEl.textContent = text;
+    comboBannerEl.hidden = false;
+    comboBannerEl.classList.remove("combo-banner"); // reflow trick để restart animation
+    void comboBannerEl.offsetWidth;
+    comboBannerEl.classList.add("combo-banner");
+    setTimeout(function () {
+      comboBannerEl.hidden = true;
+    }, 1200);
+  }
+
+  function showComboBannerIfMilestone(count) {
+    var line = COMBO_LINES[count];
+    if (line) showBanner(line);
+  }
+
+  // ---- Quả xuất hiện / lăn xuống (§2.1, §4.3) ----
+  function spawnFruit() {
     if (gameState !== "playing") return;
     var idx = pickCellIndex(lastCellIndex);
     lastCellIndex = idx;
     activeCellIndex = idx;
+    currentFruit = pickFruit();
     mouseIdCounter += 1;
     currentMouseId = mouseIdCounter;
-    renderMouseAt(idx, true);
+    renderFruitAt(idx, currentFruit);
 
-    var mouseId = currentMouseId;
+    var fruitId = currentMouseId;
     mouseTimer = setTimeout(function () {
-      onMouseTimeout(mouseId);
-    }, MOUSE_VISIBLE_MS);
+      onFruitTimeout(fruitId);
+    }, getStageParams().visibleMs);
   }
 
-  function onMouseTimeout(mouseId) {
+  function onFruitTimeout(fruitId) {
     if (gameState !== "playing") return;
-    if (mouseId !== currentMouseId || activeCellIndex === null) return;
-    // Tự lặn xuống: không trừ/cộng điểm.
-    renderMouseAt(activeCellIndex, false);
+    if (fruitId !== currentMouseId || activeCellIndex === null) return;
+    // Tự lăn xuống: không trừ/cộng điểm, mất combo.
+    var idx = activeCellIndex;
+    renderFruitAt(idx, null);
+    renderDropEffect(idx);
+    comboCount = 0;
     activeCellIndex = null;
-    scheduleNextMouse();
+    scheduleNextFruit();
   }
 
-  function scheduleNextMouse() {
+  function scheduleNextFruit() {
     gapTimer = setTimeout(function () {
-      if (gameState === "playing") spawnMouse();
-    }, GAP_AFTER_MOUSE_MS);
+      if (gameState === "playing") spawnFruit();
+    }, getStageParams().gapMs);
   }
 
   function handleCellActivate(index) {
     if (gameState !== "playing") return;
-    if (activeCellIndex === null || index !== activeCellIndex) return; // ô trống: không đổi điểm
-    if (caughtMouseIds.has(currentMouseId)) return; // phòng hờ: con này đã tính điểm rồi
+    if (activeCellIndex === null || index !== activeCellIndex) return; // sọt trống: không đổi điểm
+    if (caughtMouseIds.has(currentMouseId)) return; // phòng hờ: quả này đã tính điểm rồi
 
     caughtMouseIds.add(currentMouseId);
     clearTimeout(mouseTimer);
     score += 1;
+    comboCount += 1;
     renderScore();
-    renderCaughtEffect(index);
+    renderHitEffect(index, currentFruit);
+    showComboBannerIfMilestone(comboCount);
     activeCellIndex = null;
-    scheduleNextMouse();
+    scheduleNextFruit();
   }
 
   // ---- Đồng hồ theo thời gian thực (§4.4) ----
@@ -206,6 +411,7 @@
       return;
     }
     renderTime(Math.ceil(remainingMs / 1000));
+    checkStageTransition();
   }
 
   function clearTimers() {
@@ -222,19 +428,25 @@
     clearTimers();
     gameState = "playing";
     score = 0;
+    comboCount = 0;
+    lowTimeAnnounced = false;
+    lastStageIndex = 0;
     startTime = Date.now();
     activeCellIndex = null;
     lastCellIndex = null;
+    currentFruit = null;
     currentMouseId = null;
     caughtMouseIds = new Set();
     mouseIdCounter = 0;
 
     renderScore();
     renderTime(30);
-    clearAllMiceVisuals();
+    lowTimeLineEl.hidden = true;
+    comboBannerEl.hidden = true;
+    clearAllFruitVisuals();
     gameEl.dataset.state = "playing";
 
-    spawnMouse();
+    spawnFruit();
     tickHandle = setInterval(tick, TICK_INTERVAL_MS);
 
     if (cells[0]) cells[0].focus();
@@ -244,11 +456,15 @@
     clearTimers();
     gameState = "finished";
     activeCellIndex = null;
-    clearAllMiceVisuals();
+    clearAllFruitVisuals();
 
     var isRecord = saveHighScoreIfNeeded(score);
-    endScoreEl.textContent = score + " điểm";
+    var titleInfo = getTitleFor(score);
+    endScoreEl.textContent = score + " quả";
+    endTitleEl.textContent = titleInfo.title;
+    endCommentEl.textContent = titleInfo.comment;
     endHighScoreEl.textContent = "Điểm cao nhất: " + highScore;
+    endRecordEl.textContent = RECORD_LINE;
     endRecordEl.hidden = !isRecord;
 
     gameEl.dataset.state = "finished";
@@ -262,7 +478,7 @@
     }
   });
 
-  // ---- Đăng ký người chơi (§2.7, §4.7) ----
+  // ---- Đăng ký người chơi (§2.10, §4.7) ----
   function hasRegisteredPlayer() {
     try {
       return !!localStorage.getItem(PLAYER_ID_KEY);
@@ -282,6 +498,7 @@
   function goToIdle() {
     gameState = "idle";
     gameEl.dataset.state = "idle";
+    startGreetingEl.textContent = pickRandomExcept(GREETING_LINES, lastGreetingLine);
   }
 
   function setFieldError(el, message, inputEl) {

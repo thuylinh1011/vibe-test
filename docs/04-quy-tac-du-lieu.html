@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4. Quy tắc &amp; dữ liệu — Đập Chuột</title>
+<title>4. Quy tắc &amp; dữ liệu — Chém Hoa Quả</title>
 <link rel="stylesheet" href="../design/tokens.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="layout">
   <nav class="side">
-    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="brand" href="index.html">🍉 Chém Hoa Quả</a>
     <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
     <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
     <a class="item" href="03-man-hinh.html">3. Màn hình</a>
@@ -20,34 +20,46 @@
   <main>
     <p class="eyebrow">Tài liệu 4/5</p>
     <h1>Quy tắc &amp; dữ liệu</h1>
-    <p>Mục này đặc tả chi tiết kỹ thuật để lúc code không phải tự suy đoán: hằng số thời gian, máy trạng thái, quy tắc chọn ô ngẫu nhiên, công thức xử lý tab ẩn, và dữ liệu lưu trữ.</p>
+    <p>Mục này đặc tả chi tiết kỹ thuật để lúc code không phải tự suy đoán: hằng số thời gian, máy trạng thái, quy tắc chọn sọt ngẫu nhiên, công thức xử lý tab ẩn, dữ liệu lưu trữ, loại quả và lời thoại.</p>
 
-    <h2>4.1. Hằng số</h2>
+    <h2>4.1. Hằng số thời gian &amp; lưới</h2>
     <table class="data-table">
       <tr><th>Tên</th><th>Giá trị</th><th>Ghi chú</th></tr>
       <tr><td><code>ROUND_DURATION_MS</code></td><td>30000</td><td>Thời lượng một lượt chơi (30 giây).</td></tr>
-      <tr><td><code>MOUSE_VISIBLE_MS</code></td><td>800</td><td>Chuột trồi lên và ở lại tối đa trong khoảng này trước khi tự lặn.</td></tr>
-      <tr><td><code>GAP_AFTER_MOUSE_MS</code></td><td>300</td><td>Khoảng nghỉ giữa lúc một con chuột biến mất (bị đập hoặc tự lặn) và con tiếp theo xuất hiện.</td></tr>
-      <tr><td><code>GRID_SIZE</code></td><td>3 × 3 = 9 ô</td><td>Đánh số ô từ 0 đến 8 theo thứ tự trái→phải, trên→dưới.</td></tr>
-      <tr><td><code>LOW_TIME_THRESHOLD_S</code></td><td>5</td><td>Khi thời gian còn lại ≤ 5 giây, đồng hồ đổi màu <code>--color-danger</code>.</td></tr>
-      <tr><td><code>MIN_TAP_TARGET_PX</code></td><td>44</td><td>Kích thước tối thiểu mỗi ô để chạm thoải mái trên điện thoại (chuẩn control-height-lg trong tokens).</td></tr>
+      <tr><td><code>STAGE_DURATION_MS</code></td><td>5000</td><td>Độ dài mỗi chặng tốc độ (6 chặng × 5s = 30s, xem bảng <code>STAGES</code> dưới).</td></tr>
+      <tr><td><code>GRID_SIZE</code></td><td>3 × 3 = 9 sọt</td><td>Đánh số sọt từ 0 đến 8 theo thứ tự trái→phải, trên→dưới.</td></tr>
+      <tr><td><code>LOW_TIME_THRESHOLD_S</code></td><td>5</td><td>Khi thời gian còn lại ≤ 5 giây, đồng hồ đổi màu <code>--color-danger</code> và nhấp nháy nhẹ.</td></tr>
+      <tr><td><code>MIN_TAP_TARGET_PX</code></td><td>44</td><td>Kích thước tối thiểu mỗi sọt để chạm thoải mái trên điện thoại (chuẩn control-height-lg trong tokens).</td></tr>
     </table>
+
+    <p>Bảng <code>STAGES</code> (6 phần tử, chỉ số chặng = <code>floor((Date.now() - startTime) / STAGE_DURATION_MS)</code>, kẹp trong khoảng 0–5):</p>
+    <table class="data-table">
+      <tr><th>Chặng (index)</th><th>visibleMs</th><th>gapMs</th></tr>
+      <tr><td>0 (0–5s)</td><td>1600</td><td>600</td></tr>
+      <tr><td>1 (5–10s)</td><td>1450</td><td>550</td></tr>
+      <tr><td>2 (10–15s)</td><td>1300</td><td>500</td></tr>
+      <tr><td>3 (15–20s)</td><td>1150</td><td>450</td></tr>
+      <tr><td>4 (20–25s)</td><td>1000</td><td>400</td></tr>
+      <tr><td>5 (25–30s)</td><td>900</td><td>350</td></tr>
+    </table>
+    <p>Mỗi lần sinh quả/lên lịch quả kế tiếp, đọc <code>visibleMs</code>/<code>gapMs</code> của chặng hiện tại <strong>tại đúng thời điểm đó</strong> (không cố định từ đầu lượt) — quả đã hiện ra rồi giữ nguyên thời lượng đã đặt, chỉ quả <em>tiếp theo</em> dùng tốc độ mới. Khi chỉ số chặng tăng lên (và không phải chặng đầu), hiện banner "Chợ đông rồi, tăng tốc!" ở giữa sạp (dùng chung cơ chế hiển thị với banner combo §4.10.2, không cộng dồn hiệu ứng nếu trùng thời điểm).</p>
 
     <h2>4.2. Máy trạng thái lượt chơi</h2>
     <table class="data-table">
       <tr><th>Trạng thái</th><th>Điều kiện vào</th><th>Điều kiện ra</th></tr>
       <tr><td><code>idle</code></td><td>Mới mở trang, hoặc chưa từng bấm "Bắt đầu"</td><td>Bấm "Bắt đầu" → <code>playing</code></td></tr>
-      <tr><td><code>playing</code></td><td>Vào từ <code>idle</code>/<code>finished</code> qua "Bắt đầu"/"Chơi lại"; set <code>score=0</code>, <code>startTime=Date.now()</code>, sinh ô chuột đầu tiên</td><td>Thời gian còn lại = 0 → <code>finished</code></td></tr>
-      <tr><td><code>finished</code></td><td>Hết 30 giây (theo thời gian thực); dừng mọi hẹn giờ chuột; khoá input trên lưới</td><td>Bấm "Chơi lại" → <code>playing</code></td></tr>
+      <tr><td><code>playing</code></td><td>Vào từ <code>idle</code>/<code>finished</code> qua "Bắt đầu"/"Chơi lại"; set <code>score=0</code>, <code>comboCount=0</code>, <code>startTime=Date.now()</code>, sinh quả đầu tiên</td><td>Thời gian còn lại = 0 → <code>finished</code></td></tr>
+      <tr><td><code>finished</code></td><td>Hết 30 giây (theo thời gian thực); dừng mọi hẹn giờ quả; khoá input trên sạp; tính danh hiệu theo điểm (§4.10)</td><td>Bấm "Chơi lại" → <code>playing</code></td></tr>
     </table>
-    <p>Chỉ có đúng một hẹn giờ đếm ngược và một chuỗi hẹn giờ xuất-hiện-chuột hoạt động tại một thời điểm. Khi chuyển trạng thái, phải huỷ (clear) toàn bộ hẹn giờ của trạng thái cũ trước khi tạo hẹn giờ mới — tránh chạy chồng hai đồng hồ khi bấm "Chơi lại" nhiều lần liên tiếp.</p>
+    <p>Chỉ có đúng một hẹn giờ đếm ngược và một chuỗi hẹn giờ xuất-hiện-quả hoạt động tại một thời điểm. Khi chuyển trạng thái, phải huỷ (clear) toàn bộ hẹn giờ của trạng thái cũ trước khi tạo hẹn giờ mới — tránh chạy chồng hai đồng hồ khi bấm "Chơi lại" nhiều lần liên tiếp.</p>
 
-    <h2>4.3. Quy tắc chọn ô xuất hiện chuột</h2>
+    <h2>4.3. Quy tắc chọn sọt &amp; loại quả xuất hiện</h2>
     <ol>
-      <li>Chọn ngẫu nhiên đều (uniform random) một chỉ số ô trong 9 ô.</li>
-      <li>Nếu chỉ số vừa chọn <strong>trùng với ô vừa xuất hiện ngay trước đó</strong> (<code>lastCellIndex</code>), chọn lại cho đến khi khác, hoặc tương đương: chọn ngẫu nhiên trong tập 8 ô còn lại (loại <code>lastCellIndex</code>).</li>
-      <li>Lượt chuột đầu tiên của mỗi lượt chơi không có "ô trước đó" nên có thể rơi vào bất kỳ ô nào trong 9 ô.</li>
+      <li>Chọn ngẫu nhiên đều (uniform random) một chỉ số sọt trong 9 sọt.</li>
+      <li>Nếu chỉ số vừa chọn <strong>trùng với sọt vừa xuất hiện ngay trước đó</strong> (<code>lastCellIndex</code>), chọn lại cho đến khi khác, hoặc tương đương: chọn ngẫu nhiên trong tập 8 sọt còn lại (loại <code>lastCellIndex</code>).</li>
+      <li>Lượt quả đầu tiên của mỗi lượt chơi không có "sọt trước đó" nên có thể rơi vào bất kỳ sọt nào trong 9 sọt.</li>
       <li>Sau khi chọn, lưu chỉ số này làm <code>lastCellIndex</code> cho lần chọn tiếp theo.</li>
+      <li>Loại quả chọn ngẫu nhiên đều, độc lập với vị trí sọt, trong danh sách 6 loại ở mục 4.9 bên dưới — không áp dụng quy tắc loại trừ như vị trí sọt (cho phép lặp loại quả ở 2 lần liên tiếp).</li>
     </ol>
 
     <h2>4.4. Công thức thời gian (chống lệch khi đổi tab)</h2>
@@ -58,29 +70,34 @@
     <ul>
       <li>Mỗi lần cập nhật UI (ví dụ qua <code>requestAnimationFrame</code> hoặc <code>setInterval</code> ngắn), tính lại <code>remainingMs</code> từ mốc <code>startTime</code> cố định, không tích lũy sai số.</li>
       <li>Khi tab quay lại từ trạng thái ẩn (sự kiện <code>visibilitychange</code>), tính lại <code>remainingMs</code> ngay lập tức bằng công thức trên; nếu kết quả ≤ 0, chuyển trạng thái sang <code>finished</code> ngay (xem 4.2), không chờ tick tiếp theo.</li>
-      <li>Việc chuột xuất hiện/lặn cũng dùng hẹn giờ dựa trên thời gian thực tương tự, không tạm dừng khi tab ẩn — tức là khi quay lại tab, con chuột đang "lên" khi tab bị ẩn có thể đã tự lặn hoặc đã có con khác thay thế, đúng như mô tả trong <a href="02-chuc-nang.html">2.5</a>.</li>
+      <li>Việc quả xuất hiện/lăn xuống cũng dùng hẹn giờ dựa trên thời gian thực tương tự, không tạm dừng khi tab ẩn — tức là khi quay lại tab, quả đang "nhô lên" khi tab bị ẩn có thể đã tự lăn xuống hoặc đã có quả khác thay thế, đúng như mô tả trong <a href="02-chuc-nang.html">2.5</a>.</li>
     </ul>
 
     <h2>4.5. Mô hình dữ liệu lưu trữ</h2>
-    <p>Lưu trong <code>localStorage</code>, một khoá duy nhất:</p>
+    <p>Lưu trong <code>localStorage</code>, hai khoá:</p>
     <table class="data-table">
       <tr><th>Khoá</th><th>Kiểu giá trị</th><th>Ví dụ</th><th>Mô tả</th></tr>
       <tr><td><code>dap-chuot:highScore</code></td><td>chuỗi số nguyên ≥ 0</td><td><code>"12"</code></td><td>Điểm cao nhất từng đạt được. Không tồn tại nếu chưa chơi lượt nào.</td></tr>
+      <tr><td><code>dap-chuot:playerId</code></td><td>chuỗi</td><td><code>"7"</code></td><td>Id người chơi đã đăng ký trên trình duyệt này (§4.7).</td></tr>
     </table>
+    <p><strong>Lưu ý:</strong> cố tình <strong>giữ nguyên tiền tố <code>dap-chuot:</code></strong> trong tên khoá dù game đã đổi tên thành Chém Hoa Quả — đổi tên khoá sẽ làm mất điểm cao nhất và buộc người chơi cũ đăng ký lại. Đây chỉ là định danh kỹ thuật nội bộ, không hiển thị cho người chơi.</p>
     <ul>
-      <li>Đọc khoá này khi tải trang để hiển thị ở màn hình bắt đầu; nếu không có hoặc không đọc được (storage bị chặn/lỗi), coi như chưa có điểm cao nhất và ẩn dòng hiển thị tương ứng — không chặn luồng chơi.</li>
-      <li>Ghi lại khoá này ngay khi vào <code>finished</code> nếu <code>score > highScore</code> hiện tại; mọi lỗi khi ghi (ví dụ storage đầy/bị chặn) phải được bắt (try/catch) và bỏ qua lặng lẽ.</li>
+      <li>Đọc khoá điểm cao nhất khi tải trang để hiển thị ở màn hình bắt đầu; nếu không có hoặc không đọc được (storage bị chặn/lỗi), coi như chưa có điểm cao nhất và ẩn dòng hiển thị tương ứng — không chặn luồng chơi.</li>
+      <li>Ghi lại khoá điểm cao nhất ngay khi vào <code>finished</code> nếu <code>score > highScore</code> hiện tại; mọi lỗi khi ghi (ví dụ storage đầy/bị chặn) phải được bắt (try/catch) và bỏ qua lặng lẽ.</li>
     </ul>
 
     <h2>4.6. Dữ liệu trong bộ nhớ (runtime state)</h2>
     <table class="data-table">
       <tr><th>Trường</th><th>Kiểu</th><th>Mô tả</th></tr>
-      <tr><td><code>gameState</code></td><td><code>"idle" | "playing" | "finished"</code></td><td>Trạng thái hiện tại theo mục 4.2.</td></tr>
+      <tr><td><code>gameState</code></td><td><code>"registering" | "idle" | "playing" | "finished"</code></td><td>Trạng thái hiện tại theo mục 4.2 (và §4.7 cho <code>registering</code>).</td></tr>
       <tr><td><code>score</code></td><td>số nguyên ≥ 0</td><td>Điểm của lượt đang/vừa chơi.</td></tr>
       <tr><td><code>startTime</code></td><td>timestamp (ms)</td><td>Thời điểm bắt đầu lượt hiện tại, dùng cho công thức ở 4.4.</td></tr>
-      <tr><td><code>activeCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Ô đang có chuột; <code>null</code> nếu không có con nào đang hiện.</td></tr>
-      <tr><td><code>lastCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Ô vừa xuất hiện trước đó, dùng để loại trừ theo mục 4.3.</td></tr>
-      <tr><td><code>caughtCellIndex</code></td><td>Set các chỉ số lượt chuột đã tính điểm</td><td>Đảm bảo một con chuột (một lần xuất hiện) chỉ tính điểm một lần dù bấm nhiều lần, theo mục 2.3.</td></tr>
+      <tr><td><code>activeCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Sọt đang có quả; <code>null</code> nếu không có quả nào đang hiện.</td></tr>
+      <tr><td><code>lastCellIndex</code></td><td>0–8 hoặc <code>null</code></td><td>Sọt vừa xuất hiện trước đó, dùng để loại trừ theo mục 4.3.</td></tr>
+      <tr><td><code>currentFruitType</code></td><td>id loại quả (§4.9) hoặc <code>null</code></td><td>Loại quả đang hiện ở <code>activeCellIndex</code>, dùng để chọn lời thoại riêng theo loại quả (§4.10).</td></tr>
+      <tr><td><code>caughtMouseIds</code></td><td>Set các id lượt quả đã tính điểm</td><td>Đảm bảo một quả (một lần xuất hiện) chỉ tính điểm một lần dù bấm nhiều lần, theo mục 2.3.</td></tr>
+      <tr><td><code>comboCount</code></td><td>số nguyên ≥ 0</td><td>Số quả chém trúng liên tiếp không để rơi quả nào; về 0 khi có quả tự lăn xuống (§2.9).</td></tr>
+      <tr><td><code>lastHitLine</code>, <code>lastDropLine</code>, <code>lastGreetingLine</code></td><td>chuỗi hoặc <code>null</code></td><td>Câu thoại vừa hiện ở từng nhóm, dùng để loại trừ không lặp lại câu liền trước (§5.5 trong YEU-CAU.md, chi tiết ở §4.10).</td></tr>
     </table>
 
     <h2>4.7. Đăng ký người chơi — quy tắc &amp; dữ liệu</h2>
@@ -124,6 +141,87 @@
       <li>File CSV xuất ra gồm các cột theo thứ tự: <code>id, ho_ten, email, so_dien_thoai, thoi_diem_dang_ky</code>; mã hoá UTF-8; có dòng tiêu đề.</li>
       <li>Xoá bản ghi là xoá vĩnh viễn khỏi database, không có thùng rác/khôi phục — giao diện phải có bước xác nhận trước khi gọi API xoá.</li>
     </ul>
+
+    <h2>4.9. Loại quả &amp; hằng số hiệu ứng</h2>
+    <table class="data-table">
+      <tr><th>id</th><th>Tên</th><th>Màu vỏ</th><th>Màu ruột</th><th>Chi tiết ruột</th></tr>
+      <tr><td><code>watermelon</code></td><td>Dưa hấu</td><td>Xanh lá đậm</td><td>Đỏ</td><td>Có hạt đen.</td></tr>
+      <tr><td><code>orange</code></td><td>Cam</td><td>Cam</td><td>Cam nhạt</td><td>Có múi (vạch chia tâm).</td></tr>
+      <tr><td><code>apple</code></td><td>Táo</td><td>Đỏ</td><td>Trắng kem</td><td>—</td></tr>
+      <tr><td><code>banana</code></td><td>Chuối</td><td>Vàng</td><td>Trắng kem</td><td>Hình cong.</td></tr>
+      <tr><td><code>pineapple</code></td><td>Dứa</td><td>Nâu vàng</td><td>Vàng</td><td>Hoạ tiết mắt dứa dạng lưới.</td></tr>
+      <tr><td><code>mango</code></td><td>Xoài</td><td>Cam-vàng</td><td>Vàng cam</td><td>—</td></tr>
+    </table>
+    <p>Mỗi lần sinh quả mới: chọn ngẫu nhiên đều 1 trong 6 id trên, độc lập với vị trí sọt (§4.3) và với loại quả lần trước (được phép trùng).</p>
+    <table class="data-table">
+      <tr><th>Tên</th><th>Giá trị</th><th>Ghi chú</th></tr>
+      <tr><td><code>BLADE_STREAK_MS</code></td><td>200</td><td>Vệt lưỡi dao chéo hiện ra rồi mờ dần.</td></tr>
+      <tr><td><code>HALF_FLY_MS</code></td><td>500</td><td>Hai nửa quả bay tách ra, rơi xuống và mờ dần.</td></tr>
+      <tr><td><code>PLUS_ONE_MS</code></td><td>600</td><td>"+1" bay lên rồi mờ dần tại chỗ chém.</td></tr>
+      <tr><td><code>HIT_BUBBLE_MS</code></td><td>800</td><td>Bong bóng lời thoại khi chém trúng hiện trong khoảng này.</td></tr>
+      <tr><td><code>SCORE_BUMP_MS</code></td><td>200</td><td>Ô điểm trên HUD nảy nhẹ khi vừa cộng điểm.</td></tr>
+    </table>
+    <ul>
+      <li>Toàn bộ hiệu ứng ở trên chạy song song, không chặn việc sinh quả tiếp theo (vẫn theo đúng <code>gapMs</code> của chặng hiện tại ở trên) và không làm lệch đồng hồ ở §4.4.</li>
+      <li><strong>Giảm chuyển động:</strong> khi <code>window.matchMedia('(prefers-reduced-motion: reduce)')</code> khớp (hoặc tương đương bằng CSS <code>@media (prefers-reduced-motion: reduce)</code>), rút ngắn/bỏ các animation di chuyển (bay, nảy) — chỉ giữ lại hiệu ứng mờ dần (opacity) ở thời lượng ngắn hơn, không tắt hẳn phản hồi.</li>
+      <li><strong>Chống phóng to/chọn chữ khi bấm nhanh:</strong> khu vực sạp và từng sọt đặt <code>touch-action: manipulation</code> và <code>user-select: none</code> để bấm liên tục không bị trình duyệt hiểu thành double-tap-zoom hoặc bôi đen văn bản.</li>
+    </ul>
+
+    <h2>4.10. Lời thoại — danh sách đầy đủ</h2>
+    <p>Toàn bộ câu thoại đặt chung trong một module ở code (một nơi duy nhất) để dễ sửa/thêm sau này. Quy tắc chọn chung: ngẫu nhiên đều trong danh sách tương ứng, loại trừ câu vừa hiện ngay trước đó trong cùng nhóm (nếu danh sách chỉ có 1 câu thì không loại trừ được, cứ hiện lại).</p>
+
+    <h3>4.10.1. Khi chém trúng (chung)</h3>
+    <ul>
+      <li>"Đẳng cấp! Tuyệt vời! Tinh hoa hội tụ!"</li>
+      <li>"Dao nhanh hơn người yêu cũ trở mặt!"</li>
+      <li>"Chém một phát, ngọt như đường phèn!"</li>
+      <li>"Đỉnh của chóp!"</li>
+      <li>"Thợ chém hoa quả số 1 chợ Bến Thành!"</li>
+      <li>"Ơ kìa, ai cho chém đẹp vậy?"</li>
+    </ul>
+    <p>Khi chém trúng, có một tỉ lệ nhỏ (gợi ý 30–40%) hiện câu riêng theo loại quả (bảng dưới) thay cho câu chung; phần còn lại hiện câu chung ở trên.</p>
+    <table class="data-table">
+      <tr><th>Loại quả</th><th>Câu riêng</th></tr>
+      <tr><td>Dưa hấu</td><td>"Đỏ au như má em lúc ngại!"</td></tr>
+      <tr><td>Chuối</td><td>"Chuối này giờ là của bạn!"</td></tr>
+      <tr><td>Dứa</td><td>"Dứa nhiều mắt mà vẫn không thoát!"</td></tr>
+      <tr><td>Xoài</td><td>"Xoài cát Hòa Lộc, chém là phải sang!"</td></tr>
+      <tr><td>Cam</td><td>"Cam ơi, cam chịu đi!"</td></tr>
+      <tr><td>Táo</td><td>"Táo bạo đấy!"</td></tr>
+    </table>
+
+    <h3>4.10.2. Combo (chém liên tiếp không để rơi)</h3>
+    <table class="data-table">
+      <tr><th>Số quả liên tiếp</th><th>Câu hiện giữa sạp</th></tr>
+      <tr><td>3</td><td>"Combo x3! Tay này là tay vàng!"</td></tr>
+      <tr><td>5</td><td>"Combo x5! Cả chợ đứng hình!"</td></tr>
+      <tr><td>10</td><td>"Combo x10! Huyền thoại sạp hoa quả!"</td></tr>
+    </table>
+    <p>Chỉ hiện đúng lúc <code>comboCount</code> vừa chạm mốc (không hiện lặp lại ở các lần chém tiếp theo cùng mức); <code>comboCount</code> về 0 ngay khi có quả tự lăn xuống. Combo không cộng thêm điểm.</p>
+
+    <h3>4.10.3. Khi để quả rơi</h3>
+    <ul>
+      <li>"Ối, quả chạy mất rồi!"</li>
+      <li>"Chậm một nhịp thôi, không sao!"</li>
+      <li>"Quả này hôm nay may mắn ghê."</li>
+    </ul>
+
+    <h3>4.10.4. Màn hình bắt đầu / trong lúc chơi</h3>
+    <ul>
+      <li>Câu chào ngẫu nhiên ở màn hình bắt đầu: "Chợ mở cửa rồi, mài dao đi nào!" / "Hôm nay hoa quả tươi lắm, chém thả ga!"</li>
+      <li>Khi thời gian còn lại chạm ngưỡng <code>LOW_TIME_THRESHOLD_S</code> (5 giây): "Sắp đóng cửa chợ, nhanh tay lên!" (hiện một lần khi vừa chạm ngưỡng).</li>
+    </ul>
+
+    <h3>4.10.5. Màn hình kết thúc — danh hiệu theo điểm</h3>
+    <table class="data-table">
+      <tr><th>Điểm</th><th>Danh hiệu</th><th>Câu nhận xét</th></tr>
+      <tr><td>0–5</td><td>Khách đi chợ dạo</td><td>"Mới cầm dao lần đầu à? Thử lại nào!"</td></tr>
+      <tr><td>6–12</td><td>Phụ bán sạp</td><td>"Có tiềm năng đấy, chủ sạp để ý rồi!"</td></tr>
+      <tr><td>13–20</td><td>Chủ sạp lành nghề</td><td>"Tay dao chắc nịch, cả dãy hàng nể!"</td></tr>
+      <tr><td>21–27</td><td>Bậc thầy dao kéo</td><td>"Đẳng cấp, tuyệt vời, tinh hoa!"</td></tr>
+      <tr><td>28 trở lên</td><td>Huyền thoại chợ hoa quả</td><td>"Truyền nhân đời thứ 9 của dao phay!"</td></tr>
+    </table>
+    <p>Khi phá kỷ lục điểm cao nhất, hiện thêm (không thay thế danh hiệu): "🏆 Kỷ lục mới! Cả chợ vỗ tay!"</p>
 
     <div class="pager">
       <a href="03-man-hinh.html">← 3. Màn hình</a>

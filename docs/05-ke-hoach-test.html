@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5. Kế hoạch test — Đập Chuột</title>
+<title>5. Kế hoạch test — Chém Hoa Quả</title>
 <link rel="stylesheet" href="../design/tokens.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="layout">
   <nav class="side">
-    <a class="brand" href="index.html">🐭 Đập Chuột</a>
+    <a class="brand" href="index.html">🍉 Chém Hoa Quả</a>
     <a class="item" href="01-tong-quan.html">1. Tổng quan</a>
     <a class="item" href="02-chuc-nang.html">2. Chức năng</a>
     <a class="item" href="03-man-hinh.html">3. Màn hình</a>
@@ -36,49 +36,49 @@
         <td>F2</td>
         <td>Bấm "Bắt đầu" khởi động đồng hồ</td>
         <td>Bấm nút "Bắt đầu".</td>
-        <td>Thời gian hiển thị bắt đầu chạy từ 30 về 0; chuột đầu tiên xuất hiện.</td>
+        <td>Thời gian hiển thị bắt đầu chạy từ 30 về 0; quả đầu tiên xuất hiện.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F3</td>
         <td>Lưới đúng 3×3</td>
-        <td>Quan sát bố cục lưới ở màn hình chơi.</td>
+        <td>Quan sát bố cục sạp ở màn hình chơi.</td>
         <td>Đúng 9 ô, xếp 3 hàng × 3 cột.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F4</td>
-        <td>Chỉ 1 chuột tại một thời điểm, vị trí ngẫu nhiên không lặp ô liền trước</td>
-        <td>Quan sát 15–20 lượt chuột xuất hiện liên tiếp, ghi lại vị trí mỗi lần.</td>
-        <td>Không có thời điểm nào thấy ≥ 2 chuột cùng lúc; không có 2 lần xuất hiện liên tiếp ở cùng một ô.</td>
+        <td>Chỉ 1 quả tại một thời điểm, vị trí ngẫu nhiên không lặp sọt liền trước, loại quả đổi ngẫu nhiên</td>
+        <td>Quan sát 15–20 lượt quả xuất hiện liên tiếp, ghi lại vị trí và loại quả mỗi lần.</td>
+        <td>Không có thời điểm nào thấy ≥ 2 quả cùng lúc; không có 2 lần xuất hiện liên tiếp ở cùng một sọt; thấy ít nhất 5 loại quả khác nhau trong các lần quan sát.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F5</td>
-        <td>Đập trúng chuột +1 điểm, chuột biến mất ngay</td>
-        <td>Bấm đúng ô đang có chuột.</td>
-        <td>Điểm tăng thêm đúng 1; chuột biến mất ngay lập tức.</td>
+        <td>Chém trúng quả +1 điểm, quả tách đôi và biến mất ngay</td>
+        <td>Bấm đúng sọt đang có quả.</td>
+        <td>Điểm tăng thêm đúng 1; quả tách đôi, biến mất ngay lập tức.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F6</td>
-        <td>Bấm liên tục vào cùng một con chuột chỉ tính 1 điểm</td>
-        <td>Bấm rất nhanh nhiều lần vào ô đang có chuột trong cùng một lượt xuất hiện.</td>
-        <td>Điểm chỉ tăng +1 cho con chuột đó, không tăng thêm dù bấm thêm.</td>
+        <td>Bấm liên tục vào cùng một quả chỉ tính 1 điểm</td>
+        <td>Bấm rất nhanh nhiều lần vào sọt đang có quả trong cùng một lượt xuất hiện.</td>
+        <td>Điểm chỉ tăng +1 cho quả đó, không tăng thêm dù bấm thêm.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F7</td>
         <td>Bấm ô trống không đổi điểm</td>
-        <td>Bấm vào một ô không có chuột.</td>
+        <td>Bấm vào một sọt không có quả.</td>
         <td>Điểm không thay đổi.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>F8</td>
-        <td>Để chuột tự lặn không bị trừ điểm</td>
-        <td>Không bấm, để chuột tự lặn xuống sau ~0,8s.</td>
-        <td>Điểm không thay đổi; con chuột tiếp theo xuất hiện sau ~0,3s.</td>
+        <td>Để quả tự lăn xuống không bị trừ điểm, combo về 0</td>
+        <td>Không bấm, để quả tự lăn xuống sau ~0,8s.</td>
+        <td>Điểm không thay đổi; hiện câu trêu nhẹ (§4.10.3); quả tiếp theo xuất hiện sau ~0,3s.</td>
         <td><span class="badge p1">P1</span></td>
       </tr>
       <tr>
@@ -90,8 +90,8 @@
       </tr>
       <tr>
         <td>F10</td>
-        <td>Hết giờ thì lưới không nhận thao tác nữa</td>
-        <td>Sau khi màn hình kết thúc hiện ra, thử bấm vào vùng lưới (nếu còn hiển thị).</td>
+        <td>Hết giờ thì sạp không nhận thao tác nữa</td>
+        <td>Sau khi màn hình kết thúc hiện ra, thử bấm vào vùng sạp (nếu còn hiển thị).</td>
         <td>Không có gì xảy ra, điểm không đổi.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
@@ -106,7 +106,7 @@
         <td>F12</td>
         <td>"Chơi lại" reset đúng, không chạy chồng đồng hồ</td>
         <td>Ở màn hình kết thúc, bấm "Chơi lại" nhiều lần nhanh liên tiếp (double click).</td>
-        <td>Điểm về 0, thời gian về 30s, chỉ có một đồng hồ/một chuỗi chuột chạy — không thấy thời gian nhảy bất thường hoặc 2 chuột cùng lúc.</td>
+        <td>Điểm về 0, thời gian về 30s, combo về 0, chỉ có một đồng hồ/một chuỗi quả chạy — không thấy thời gian nhảy bất thường hoặc 2 quả cùng lúc.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
@@ -122,6 +122,41 @@
         <td>Sau khi đã có điểm cao nhất, chơi một lượt đạt điểm thấp hơn.</td>
         <td>Điểm cao nhất hiển thị không đổi.</td>
         <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>F15</td>
+        <td>Có ít nhất 5 loại quả, phân biệt được</td>
+        <td>Chơi vài lượt, ghi lại các loại quả xuất hiện (màu vỏ/hình dạng).</td>
+        <td>Thấy ít nhất 5/6 loại trong danh sách §4.9 docs, mỗi loại nhận ra được bằng mắt.</td>
+        <td><span class="badge p0">P0</span></td>
+      </tr>
+      <tr>
+        <td>F16</td>
+        <td>Combo tăng đúng, về 0 khi rơi quả</td>
+        <td>Chém trúng liên tiếp 3, 5, 10 quả không để rơi quả nào; sau đó cố tình để 1 quả rơi.</td>
+        <td>Hiện đúng câu combo ở mốc 3/5/10; sau khi để rơi, combo tiếp theo đếm lại từ 1; điểm không bị ảnh hưởng bởi combo.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>F17</td>
+        <td>Danh hiệu cuối lượt đúng theo mốc điểm</td>
+        <td>Chơi đạt điểm rơi vào từng khoảng ở bảng §4.10.5 (ví dụ 5, 12, 20, 27, 30 điểm).</td>
+        <td>Màn hình kết thúc hiện đúng danh hiệu và câu nhận xét tương ứng với khoảng điểm đạt được.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>F18</td>
+        <td>Tốc độ nhanh dần đúng theo 6 chặng</td>
+        <td>Để quả tự lăn (không bấm) ở giây ~2 (chặng 1) và lại để tự lăn ở giây ~27 (chặng 6); bấm giờ đo thời gian quả tồn tại mỗi lần.</td>
+        <td>Quả ở chặng 1 tồn tại lâu hơn rõ rệt (~1,6s) so với chặng 6 (~0,9s), đúng hướng giảm dần theo bảng §2.1.1/§4.9.</td>
+        <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>F19</td>
+        <td>Báo "tăng tốc" khi sang chặng mới</td>
+        <td>Chơi qua mốc 5s, 10s, 15s, 20s, 25s mà không bấm gì.</td>
+        <td>Mỗi lần qua mốc, hiện banner "Chợ đông rồi, tăng tốc!" ở giữa sạp — không hiện lại ở chặng 1 (lúc bắt đầu).</td>
+        <td><span class="badge p2">P2</span></td>
       </tr>
     </table>
 
@@ -139,7 +174,7 @@
         <td>U2</td>
         <td>Chơi được bằng cảm ứng trên điện thoại</td>
         <td>Mở trên điện thoại thật hoặc chế độ giả lập điện thoại trong DevTools, chơi một lượt bằng chạm.</td>
-        <td>Tap trúng ô có chuột được tính điểm; không cần zoom để bấm trúng.</td>
+        <td>Tap trúng sọt có quả được tính điểm; không cần zoom để bấm trúng; bấm nhanh liên tục không phóng to trang.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
@@ -152,14 +187,14 @@
       <tr>
         <td>U4</td>
         <td>Điểm &amp; thời gian luôn nhìn thấy khi chơi</td>
-        <td>Quan sát trong suốt lượt chơi, kể cả khi chuột đang xuất hiện ở các vị trí khác nhau.</td>
+        <td>Quan sát trong suốt lượt chơi, kể cả khi quả và hiệu ứng chém đang hiện ở các vị trí khác nhau.</td>
         <td>HUD điểm/thời gian không bị che hoặc biến mất.</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
         <td>U5</td>
-        <td>Phản hồi khi đập trúng tức thời</td>
-        <td>Đập trúng một con chuột, quan sát bằng mắt.</td>
+        <td>Phản hồi khi chém trúng tức thời</td>
+        <td>Chém trúng một quả, quan sát bằng mắt (tách đôi lộ ruột, giọt nước, "+1" bay lên, HUD nảy nhẹ, vệt dao).</td>
         <td>Hiệu ứng đổi hình/nhấp nháy và điểm cập nhật cùng lúc, không có độ trễ nhận thấy được.</td>
         <td><span class="badge p1">P1</span></td>
       </tr>
@@ -173,9 +208,16 @@
       <tr>
         <td>U7</td>
         <td>Chơi bằng bàn phím (Tab + Enter/Space)</td>
-        <td>Không dùng chuột/chạm; dùng <code>Tab</code> để focus qua các ô, <code>Enter</code>/<code>Space</code> để đập.</td>
-        <td>Focus hiển thị rõ; đập trúng ô có chuột bằng phím được tính điểm giống như click.</td>
+        <td>Không dùng chuột/chạm; dùng <code>Tab</code> để focus qua các sọt, <code>Enter</code>/<code>Space</code> để chém.</td>
+        <td>Focus hiển thị rõ; chém trúng sọt có quả bằng phím được tính điểm giống như click.</td>
         <td><span class="badge p1">P1</span></td>
+      </tr>
+      <tr>
+        <td>U8</td>
+        <td>Nền chợ đêm đèn lồng + quả dễ thương hiển thị đúng</td>
+        <td>Quan sát toàn bộ game: trời sao, dây đèn, đèn lồng (ở màn rộng ≥560px), sạp gỗ/sọt tre, mặt quả (mắt/miệng/má hồng).</td>
+        <td>Thấy rõ bối cảnh chợ đêm, không bị vỡ layout ở cả màn hẹp lẫn rộng, không dùng ảnh tải từ ngoài (kiểm tra tab Network không có request ảnh).</td>
+        <td><span class="badge p2">P2</span></td>
       </tr>
     </table>
 
@@ -184,9 +226,9 @@
       <tr><th>#</th><th>Test case</th><th>Bước thực hiện</th><th>Kết quả mong đợi</th><th>Mức</th></tr>
       <tr>
         <td>T1</td>
-        <td>Chạy được khi mở trực tiếp file, không cần máy chủ</td>
-        <td>Mở file HTML bằng cách double-click / kéo vào trình duyệt (giao thức <code>file://</code>), không chạy qua server nào.</td>
-        <td>Game hoạt động đầy đủ như khi chạy qua server.</td>
+        <td>Chạy được qua Docker Compose, không cần cài Node/Postgres thủ công</td>
+        <td><code>docker compose up --build</code> rồi mở <code>http://localhost:3000</code>.</td>
+        <td>Game chạy đầy đủ (kể cả đăng ký, trang quản trị); không có lỗi console. (Lưu ý: khác bản trước, bản này cần server + database nên không mở được bằng cách mở trực tiếp file HTML qua <code>file://</code>.)</td>
         <td><span class="badge p0">P0</span></td>
       </tr>
       <tr>
@@ -209,6 +251,20 @@
         <td>Chặn storage của trình duyệt (hoặc mở ở chế độ hạn chế lưu trữ), chơi thử.</td>
         <td>Game vẫn chơi được bình thường; chỉ không giữ điểm cao nhất qua lần tải lại; không có lỗi chặn luồng chơi.</td>
         <td><span class="badge p2">P2</span></td>
+      </tr>
+      <tr>
+        <td>T5</td>
+        <td>Giảm chuyển động (prefers-reduced-motion) được tôn trọng</td>
+        <td>Bật "giảm chuyển động" trong hệ điều hành (macOS: Trợ năng &gt; Hiển thị &gt; Giảm chuyển động), chơi thử và chém vài quả.</td>
+        <td>Hiệu ứng bay/nảy của nửa quả, "+1" rút ngắn hoặc chỉ còn mờ dần — không còn chuyển động mạnh như bình thường.</td>
+        <td><span class="badge p2">P2</span></td>
+      </tr>
+      <tr>
+        <td>T6</td>
+        <td>Không tải ảnh/thư viện từ bên ngoài</td>
+        <td>Mở tab Network trong DevTools khi chơi, lọc theo loại ảnh/script; chỉ chấp nhận request tới <code>fonts.googleapis.com</code>/<code>fonts.gstatic.com</code> (font chữ) và các file cùng origin.</td>
+        <td>Không có request ảnh (jpg/png/gif) hay thư viện JS từ CDN ngoài; toàn bộ hoa quả/sạp vẽ bằng SVG/CSS nhúng sẵn.</td>
+        <td><span class="badge p1">P1</span></td>
       </tr>
     </table>
 

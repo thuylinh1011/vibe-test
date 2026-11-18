@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Đập Chuột</title>
+<title>Chém Hoa Quả</title>
 <link rel="stylesheet" href="../design/tokens.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="lantern lantern-left" aria-hidden="true"></div>
+  <div class="lantern lantern-right" aria-hidden="true"></div>
   <main class="game" id="game" data-state="registering">
 
     <section class="screen screen-register" id="screenRegister">
@@ -38,8 +40,9 @@
 
     <section class="screen screen-start" id="screenStart">
       <div class="panel">
-        <h1 class="title">🐭 Đập Chuột</h1>
-        <p class="tagline">Bấm vào chuột càng nhiều càng tốt trong 30 giây.</p>
+        <h1 class="title">🍉 Chém Hoa Quả</h1>
+        <p class="tagline">Bấm vào hoa quả để chém càng nhiều càng tốt trong 30 giây.</p>
+        <p class="greeting" id="startGreeting"></p>
         <p class="high-score" id="startHighScore"></p>
         <button class="btn btn-primary btn-lg" id="btnStart" type="button">Bắt đầu</button>
       </div>
@@ -50,15 +53,24 @@
         <span class="hud-score">Điểm: <strong id="scoreValue">0</strong></span>
         <span class="hud-time" id="timeValue">30s</span>
       </div>
-      <div class="grid" id="grid" role="group" aria-label="Lưới 9 ô, bấm vào ô có chuột để ghi điểm"></div>
+      <div class="market-stall">
+        <div class="market-banner" aria-hidden="true"></div>
+        <div class="grid-wrap">
+          <div class="grid" id="grid" role="group" aria-label="Sạp 9 sọt, bấm vào sọt có quả để chém"></div>
+          <p class="low-time-line" id="lowTimeLine" hidden></p>
+          <p class="combo-banner" id="comboBanner" hidden></p>
+        </div>
+      </div>
     </section>
 
     <section class="screen screen-end" id="screenEnd">
       <div class="panel">
         <h1 class="title">Hết giờ!</h1>
-        <p class="end-score" id="endScore">0 điểm</p>
+        <p class="end-score" id="endScore">0 quả</p>
+        <p class="end-title" id="endTitle">Khách đi chợ dạo</p>
+        <p class="end-comment" id="endComment"></p>
         <p class="end-high" id="endHighScore">Điểm cao nhất: 0</p>
-        <p class="end-record" id="endRecord" hidden>🏆 Kỷ lục mới!</p>
+        <p class="end-record" id="endRecord" hidden>🏆 Kỷ lục mới! Cả chợ vỗ tay!</p>
         <button class="btn btn-primary btn-lg" id="btnRestart" type="button">Chơi lại</button>
       </div>
     </section>
